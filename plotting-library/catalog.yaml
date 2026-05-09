@@ -14,8 +14,8 @@ charts:
   - APA差异分析
   - eQTL汇总
   tags:
-  - 差异表达
   - 散点
+  - 差异表达
   template: templates/volcano.py
   references:
   - R2Omics
@@ -41,8 +41,8 @@ charts:
   - apaQTL
   - GWAS
   tags:
-  - GWAS/QTL
   - 散点
+  - GWAS/QTL
   template: templates/manhattan.py
   references:
   - R2Omics
@@ -93,8 +93,8 @@ charts:
   - KEGG富集
   - 功能注释
   tags:
-  - 富集
   - 散点
+  - 富集
   template: templates/enrichment_bubble.py
   references:
   - R2Omics
@@ -114,7 +114,7 @@ charts:
   - 表达量分布
   tags:
   - 分布
-  - 比较
+  - 箱线
   template: templates/box_violin.py
   references:
   - R2Omics
@@ -134,7 +134,7 @@ charts:
   - 多组分布对比
   tags:
   - 分布
-  - 比较
+  - 云雨
   template: templates/raincloud.py
   references:
   - SRplot
@@ -158,8 +158,8 @@ charts:
   - 样本聚类
   - 批次效应检查
   tags:
+  - 散点
   - 降维
-  - 聚类
   template: templates/pca_plot.py
   references:
   - R2Omics
@@ -179,7 +179,7 @@ charts:
   - 临床预后
   - 基因分组生存
   tags:
-  - 临床
+  - 线图/曲线
   - 生存
   template: templates/km_survival.py
   references:
@@ -214,8 +214,8 @@ charts:
   - category
   description: 展示跨条件的PDUI模式变化（gain/loss/switch等分类散点）
   tags:
-  - APA
   - 散点
+  - APA
   template: templates/apa_pattern.py
   demo: apa_pattern_demo.png
 - name: apa_sankey
@@ -229,8 +229,8 @@ charts:
   - count
   description: 展示分类模式在条件间的流转关系（桑基/冲积图）
   tags:
-  - APA
-  - 流程
+  - 网络/关系
+  - 桑基
   template: templates/sankey.py
   demo: null
 - name: enrichment_circos
@@ -246,8 +246,8 @@ charts:
   - category
   description: 多类别富集结果的可视化圈图
   tags:
-  - 富集
   - 圈图
+  - 富集
   template: templates/enrichment_circos.py
   demo: enrichment_circos_demo.png
 - name: grouped_bar
@@ -263,7 +263,7 @@ charts:
   description: 多组间数值比较，带误差线
   tags:
   - 柱状图
-  - 比较
+  - 分组比较
   template: templates/grouped_bar.py
   demo: grouped_bar_demo.png
 - name: ridgeline
@@ -277,7 +277,7 @@ charts:
   description: 多组分布的脊线图，直观比较分布形态
   tags:
   - 分布
-  - 趋势
+  - 山峦
   template: templates/ridgeline.py
   demo: ridgeline_demo.png
 - name: network_graph
@@ -291,7 +291,7 @@ charts:
   - weight
   description: 节点-边关系可视化（基因互作、调控网络）
   tags:
-  - 网络
+  - 网络/关系
   - 互作
   template: templates/network_graph.py
   demo: network_graph_demo.png
@@ -320,8 +320,8 @@ charts:
   - group_label
   description: UMAP降维可视化（单细胞常用）
   tags:
+  - 散点
   - 降维
-  - 单细胞
   template: templates/umap_plot.py
   demo: umap_demo.png
 - name: roc_curve
@@ -335,7 +335,7 @@ charts:
   - auc
   description: 分类器性能评估ROC曲线
   tags:
-  - 临床
+  - 线图/曲线
   - 分类
   template: templates/roc_curve.py
   demo: roc_demo.png
@@ -374,7 +374,7 @@ charts:
   - 肿瘤基因组
   - 突变景观
   tags:
-  - 肿瘤
+  - 基因组结构
   - 突变
   references:
   - SRplot
@@ -394,7 +394,7 @@ charts:
   - 蛋白功能域
   - 修饰位点
   tags:
-  - 突变
+  - 散点
   - 位点标注
   references:
   - ChiPlot
@@ -409,7 +409,7 @@ charts:
   - membership
   description: Gene-Term关联弦图，GO/KEGG富集可视化
   tags:
-  - 富集
+  - 网络/关系
   - 弦图
   references:
   - SRplot
@@ -424,8 +424,8 @@ charts:
   - group2
   description: 分组流向冲积图，展示样本跨条件分类变化
   tags:
-  - 流程
-  - 分组
+  - 网络/关系
+  - 冲积
   references:
   - SRplot
 - name: gsea_plot
@@ -439,8 +439,8 @@ charts:
   - pvalue
   description: 基因集富集分析标准可视化
   tags:
+  - 线图/曲线
   - 富集
-  - 曲线
   references:
   - SRplot
   - Bioincloud
@@ -453,7 +453,7 @@ charts:
   - pvalue
   description: P值分布QQ图，GWAS QC标配
   tags:
-  - GWAS/QTL
+  - 散点
   - 检验
   references:
   - SRplot
@@ -468,8 +468,8 @@ charts:
   - value2
   description: 配对比较哑铃图，前后或两组对比更直观
   tags:
-  - 比较
-  - 配对
+  - 散点
+  - 配对比较
   references:
   - ChiPlot
 - name: stacked_bar
@@ -500,7 +500,7 @@ charts:
   description: Up/Down对比的双向柱状图，多用于富集结果
   tags:
   - 柱状图
-  - 比较
+  - 双向
   references:
   - SRplot
 - name: dot_plot_seurat
@@ -515,8 +515,8 @@ charts:
   - avg_expr
   description: 单细胞marker基因表达(点=比例,色=表达)
   tags:
+  - 散点
   - 单细胞
-  - 标记基因
   references:
   - SRplot
 - name: stacked_area
@@ -530,8 +530,8 @@ charts:
   - proportion
   description: 组成比例随时间变化
   tags:
+  - 面积图
   - 组成
-  - 趋势
 - name: go_triple_bar
   title: GO三合一柱状图
   tier: P2
@@ -544,8 +544,8 @@ charts:
   - pvalue
   description: GO BP/CC/MF三大类合并展示柱状图
   tags:
-  - 富集
   - 柱状图
+  - 富集
   references:
   - SRplot
 - name: ma_plot
@@ -559,8 +559,8 @@ charts:
   - log2fc
   description: 转录组差异表达MA图，与volcano互补
   tags:
-  - 差异表达
   - 散点
+  - 差异表达
   references:
   - Bioincloud
 - name: radar_plot
@@ -574,8 +574,8 @@ charts:
   - value
   description: 多维特征雷达图
   tags:
+  - 雷达图
   - 多维
-  - 比较
   references:
   - ChiPlot
 - name: circos_plot
@@ -591,8 +591,8 @@ charts:
   - category
   description: 全基因组结构/变异环状展示
   tags:
-  - 基因组
   - 圈图
+  - 基因组
   references:
   - ChiPlot
   - Bioincloud
@@ -606,8 +606,8 @@ charts:
   - metadata
   description: 进化树可视化，支持Normal/Circular/Unrooted布局
   tags:
-  - 进化
-  - 树
+  - 基因组结构
+  - 进化树
   references:
   - ChiPlot
 - name: gene_cluster
@@ -623,8 +623,8 @@ charts:
   - strand
   description: 比较基因组学基因簇可视化
   tags:
-  - 基因组
-  - 比较
+  - 基因组结构
+  - 基因簇
   references:
   - ChiPlot
 - name: sunset_plot
@@ -641,7 +641,7 @@ charts:
   - end2
   description: 基因组共线性分析(McScanX)
   tags:
-  - 基因组
+  - 基因组结构
   - 共线性
   references:
   - ChiPlot
@@ -657,8 +657,8 @@ charts:
   - component3
   description: 三组成分占比(物种/代谢物)
   tags:
-  - 组成
   - 散点
+  - 组成
   references:
   - Bioincloud
 - name: circular_bar
@@ -703,7 +703,7 @@ charts:
   - group
   description: 3D PCA/3D UMAP
   tags:
-  - 降维
+  - 散点
   - 3D
   references:
   - SRplot
@@ -737,7 +737,7 @@ charts:
   - category
   description: 染色体区段标注，GWAS/QTL信号可视化
   tags:
-  - 基因组
+  - 基因组结构
   - 标注
   references:
   - SRplot
@@ -753,8 +753,8 @@ charts:
   - brain_region
   description: PDUI/expression随发育阶段变化的多轨迹线图
   tags:
+  - 线图/曲线
   - APA
-  - 趋势
 - name: brain_atlas_heatmap
   title: 脑区热图
   tier: P1
@@ -780,8 +780,8 @@ charts:
   - pas_types
   description: 基因exon-intron结构+3'UTR APA位点标注
   tags:
+  - 基因组结构
   - APA
-  - 基因结构
 data_types:
   differential_expression:
     description: 差异表达/差异分析结果
