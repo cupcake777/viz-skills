@@ -5,6 +5,7 @@ version: 1.2
 tags: [plotting, visualization, matplotlib, bioinformatics]
 related_skills: [sci-fig]
 canonical_source: https://github.com/cupcake777/viz-skills/tree/main/plotting-library
+compatibility: Requires Python 3.9+ with matplotlib, numpy, pandas, scipy, and various plotting libraries (seaborn, networkx, plotly, lifelines, etc.). See plotting/requirements.txt.
 ---
 # Plotting Library
 
@@ -109,17 +110,64 @@ Templates use: `matplotlib.rc_file(str(STYLE_PATH), plt.rcParams)`
 
 ### Tier 2: Medium Priority (Common Needs)
 
-**dot_plot_seurat** — Seurat-style marker gene expression
-- Data: `marker_expression` (gene, cluster, pct_expressed, avg_expr)
-- Key params: DOT_SIZE_RANGE, COLOR_RANGE, CLUSTER_ORDER
-
 **forest_plot** — Meta-analysis OR/HR with confidence intervals
 - Data: `meta_analysis` (variable, estimate, ci_lower, ci_upper)
 - Key params: REFERENCE_LINE(1.0), X_SCALE(log)
+- Sources: SRplot, Bioincloud
+
+**raincloud** — Violin+Box+Jitter三合一分布图
+- Data: `distribution_comparison` (group, value)
+- Key params: VIOLIN_WIDTH, BOX_WIDTH, RAIN_POINT_SIZE, CUT_OFF
+- Sources: SRplot, ChiPlot, Bioincloud (三站都有)
+
+**oncoplot** — 肿瘤突变景观瀑布图
+- Data: `mutation_matrix` (sample, gene, mutation_type)
+- Key params: GENE_ORDER, SAMPLE_ORDER, MUTATION_COLORS
+- Sources: SRplot(waterfall), Bioincloud(Oncoplot)
 
 **lollipop** — Gene mutation/modification site annotation
 - Data: `mutation_site` (position, type, count)
 - Key params: MARKER_SIZE, DOMAIN_TRACK
+- Sources: ChiPlot
+
+**chord_plot** — Gene-Term关联弦图(GO/KEGG)
+- Data: `gene_term_matrix` (gene, term, membership)
+- Key params: GENE_ORDER, TERM_COLORS, LOGFC_COLOR
+- Sources: SRplot
+
+**alluvial_plot** — 分组流向冲积图
+- Data: `group_flow` (sample, group1, group2, ...)
+- Key params: COLOR_BY, ALPHA, CURVE_TYPE
+- Sources: SRplot
+
+**gsea_plot** — GSEA富集曲线
+- Data: `gsea_result` (ranked_genes, enrichment_score, pvalue)
+- Key params: NES_COLOR, PHENOTYPE_LABELS
+- Sources: SRplot, Bioincloud
+
+**qq_plot** — P值分布QQ图
+- Data: `pvalue_vector` (pvalue)
+- Key params: EXPECTED_LINE, CI_ALPHA
+- Sources: SRplot
+
+**dumbbell_plot** — 配对比较哑铃图
+- Data: `paired_comparison` (group, value1, value2)
+- Key params: DOT_SIZE, LINE_WIDTH, COLOR_PAIR
+- Sources: ChiPlot
+
+**stacked_bar** — 堆叠柱状图(组成占比)
+- Data: `composition` (category, group, value)
+- Key params: POSITION(fill), LABEL_THRESHOLD
+- Sources: SRplot, Bioincloud
+
+**bidirectional_bar** — 左右双向柱状图(Up/Down)
+- Data: `bidirectional` (term, up_value, down_value)
+- Key params: LEFT_COLOR, RIGHT_COLOR
+- Sources: SRplot
+
+**dot_plot_seurat** — Seurat-style marker gene expression
+- Data: `marker_expression` (gene, cluster, pct_expressed, avg_expr)
+- Key params: DOT_SIZE_RANGE, COLOR_RANGE, CLUSTER_ORDER
 
 **stacked_area** — Composition change over time
 - Data: `composition_over_time` (timepoint, category, proportion)
@@ -127,22 +175,103 @@ Templates use: `matplotlib.rc_file(str(STYLE_PATH), plt.rcParams)`
 
 ### Tier 3: Nice to Have
 
+**go_triple_bar** — GO BP/CC/MF三合一柱状图
+- Data: `go_terms` (term, category, count, pvalue)
+- Key params: CATEGORY_ORDER(BP,CC,MF), TOP_N
+- Sources: SRplot
+
+**ma_plot** — 转录组MA图(LogRatio vs Mean)
+- Data: `ma_data` (gene, mean_expr, log2fc)
+- Key params: FC_THRESHOLD, P_THRESHOLD
+- Sources: Bioincloud
+
+**radar_plot** — 雷达图(多维特征profile)
+- Data: `radar_data` (category, dimension, value)
+- Key params: FILL_ALPHA, LABEL_SIZE
+- Sources: ChiPlot
+
+**circos_plot** — 基因组圈图(全基因组结构/变异)
+- Data: `genomic_regions` (chr, start, end, value, category)
+- Key params: CHR_HEIGHT, TRACK_ORDER
+- Sources: ChiPlot, Bioincloud, SRplot
+
+**phylo_tree** — 系统发育树(Normal/Circular/Unrooted)
+- Data: `newick_tree` (tree_string, metadata)
+- Key params: LAYOUT, ANNOTATION_LAYERS
+- Sources: ChiPlot(最强), Bioincloud
+
+**gene_cluster** — 比较基因组基因簇
+- Data: `gene_clusters` (organism, gene_start, gene_end, gene_name, strand)
+- Key params: SCALE_AXIS, GENE_COLORS
+- Sources: ChiPlot
+
+**synteny_plot** — 基因组共线性(McScanX)
+- Data: `synteny_blocks` (chr1, start1, end1, chr2, start2, end2)
+- Key params: BLOCK_ALPHA, CHR_ORDER
+- Sources: ChiPlot
+
+**ternary_plot** — 三元相图(三组成占比)
+- Data: `ternary_data` (sample, component1, component2, component3)
+- Key params: MARKER_SIZE, CONTOUR_LINES
+- Sources: Bioincloud
+
+**circular_bar** — 环状条形图(物种丰度)
+- Data: `circular_data` (category, value)
+- Key params: START_ANGLE, INNER_RADIUS
+- Sources: Bioincloud
+
+**circular_heatmap** — 环状热图
+- Data: `circular_matrix` (row, column, value)
+- Key params: ANGLE_OFFSET, COLORMAP
+- Sources: ChiPlot, Bioincloud
+
+**3d_scatter** — 三维散点(3D PCA/UMAP)
+- Data: `3d_data` (x, y, z, group)
+- Key params: ELEVATION, AZIMUTH, ALPHA
+- Sources: SRplot
+
+**risk_score** — 风险得分三联图(risk+survival+heatmap)
+- Data: `risk_data` (sample, risk_score, group, survival_time, event, gene_matrix)
+- Key params: GROUP_COLORS, CUTOFF
+- Sources: SRplot
+
 **chromosome_ideogram** — Genomic region annotation on chromosome
 - Data: `genomic_region` (chr, start, end, label, category)
 - Key params: CHR_HEIGHT, BAND_COLOR_MAP
 
 ### Template Implementation Status
 
-| Template | Status | catalog.yaml | _demo_map |
-|----------|--------|-------------|-----------|
-| lifespan_trajectory | 📋 Planned | Pending | Pending |
-| brain_atlas_heatmap | 📋 Planned | Pending | Pending |
-| gene_structure_apa | 📋 Planned | Pending | Pending |
-| dot_plot_seurat | 📋 Planned | Pending | Pending |
-| forest_plot | 📋 Planned | Pending | Pending |
-| lollipop | 📋 Planned | Pending | Pending |
-| stacked_area | 📋 Planned | Pending | Pending |
-| chromosome_ideogram | 📋 Planned | Pending | Pending |
+| Template | Status | Priority | catalog.yaml | _demo_map | Source |
+|----------|--------|----------|-------------|-----------|--------|
+| lifespan_trajectory | 📋 Planned | P1 | Pending | Pending | Custom |
+| brain_atlas_heatmap | 📋 Planned | P1 | Pending | Pending | Custom |
+| gene_structure_apa | 📋 Planned | P1 | Pending | Pending | Custom |
+| **forest_plot** | 📋 Planned | **P0** | Pending | Pending | SRplot+Bioincloud |
+| **raincloud** | 📋 Planned | **P0** | Pending | Pending | SRplot+ChiPlot+Bioincloud |
+| **oncoplot** | 📋 Planned | **P0** | Pending | Pending | SRplot+Bioincloud |
+| **lollipop** | 📋 Planned | **P0** | Pending | Pending | ChiPlot |
+| chord_plot | 📋 Planned | P1 | Pending | Pending | SRplot |
+| alluvial_plot | 📋 Planned | P1 | Pending | Pending | SRplot |
+| gsea_plot | 📋 Planned | P1 | Pending | Pending | SRplot+Bioincloud |
+| qq_plot | 📋 Planned | P1 | Pending | Pending | SRplot |
+| dumbbell_plot | 📋 Planned | P1 | Pending | Pending | ChiPlot |
+| stacked_bar | 📋 Planned | P1 | Pending | Pending | SRplot+Bioincloud |
+| bidirectional_bar | 📋 Planned | P1 | Pending | Pending | SRplot |
+| dot_plot_seurat | 📋 Planned | P1 | Pending | Pending | ChiPlot(Seruat) |
+| stacked_area | 📋 Planned | P2 | Pending | Pending | Custom |
+| go_triple_bar | 📋 Planned | P2 | Pending | Pending | SRplot |
+| ma_plot | 📋 Planned | P2 | Pending | Pending | Bioincloud |
+| radar_plot | 📋 Planned | P2 | Pending | Pending | ChiPlot |
+| circos_plot | 📋 Planned | P2 | Pending | Pending | ChiPlot |
+| phylo_tree | 📋 Planned | P2 | Pending | Pending | ChiPlot |
+| gene_cluster | 📋 Planned | P2 | Pending | Pending | ChiPlot |
+| synteny_plot | 📋 Planned | P2 | Pending | Pending | ChiPlot |
+| ternary_plot | 📋 Planned | P2 | Pending | Pending | Bioincloud |
+| circular_bar | 📋 Planned | P2 | Pending | Pending | Bioincloud |
+| circular_heatmap | 📋 Planned | P2 | Pending | Pending | ChiPlot+Bioincloud |
+| 3d_scatter | 📋 Planned | P2 | Pending | Pending | SRplot |
+| risk_score | 📋 Planned | P2 | Pending | Pending | SRplot |
+| chromosome_ideogram | 📋 Planned | P2 | Pending | Pending | SRplot |
 
 When implementing a new template:
 1. Create `templates/{name}.py` with `generate_mock_data()` + `plot()` + `__main__`

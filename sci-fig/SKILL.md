@@ -1,14 +1,14 @@
 ---
 name: sci-fig
 description: "Scientific figure generation: chart type selection, R/Python recipes, visual standards, and learning from example figures. Use whenever generating, modifying, or discussing any scientific plot or figure. Triggers on: plot, visualize, draw, figure, chart, heatmap, volcano, scatter, bar, violin, enrichment, manhattan, any ggplot2/matplotlib code, or figure quality complaints (labels overlap, text too small, colors clash)."
-version: 3.2
+version: 3.3
 tags: [plotting, visualization, bioinformatics, R, python, ggplot2, matplotlib]
 related_skills: [plotting-library]
 canonical_source: https://github.com/cupcake777/viz-skills/tree/main/sci-fig
+compatibility: Requires Python 3.9+ with matplotlib, R with ggplot2 for recipes. plotting-library skill and /root/ops/plotting/ for execution.
 ---
 
 # Scientific Figure Skill
-
 
 ## Architecture
 
@@ -35,7 +35,6 @@ sci-fig (skill)              ← 你现在读的：知识系统 + 学习协议 +
 - **不重复部署** — Brain API已有: `/login`, `/dashboard`, `/quota`(号池), `/review`, `/grok`, `/gallery`
 
 ---
-
 
 ## Workflow
 
@@ -328,6 +327,162 @@ cat /root/ops/plotting/gallery_feedback.jsonl
 
 ---
 
+## 学习协议
+
+当用户发来一张觉得好的图（来自paper、网站或自己的作品）：
+
+### L1: 拆解
+
+分析并提取8个维度：
+
+1. **图表类型** — 火山图?热图?ridge?dot plot?
+2. **布局** — 单面板/多面板? 排列方式? 宽高比?
+3. **配色** — 提取hex色值，或匹配已知palette
+4. **字体** — serif/sans-serif, 大小层级, bold/italic用法
+5. **轴处理** — log/sqrt刻度? 刻度标签格式? 有无grid
+6. **标注** — 统计标记, 基因标签, 阈值线, 图例位置
+7. **数据编码通道** — position, color, size, shape 各编码了什么
+8. **好在哪里** — 1-2句话总结，为什么这张图比平均水准好
+
+### L2: 分类
+
+| 情况 | 操作 |
+|------|------|
+| 全新图表类型（模板库没有） | 创建新模板脚本 + 新recipe文档 |
+| 已有类型的风格变体 | 在现有模板上加 variation 参数 + recipe文档加 Variants 段 |
+| 基础recipe的普适改进 | 直接patch基础模板和recipe，加版本说明 |
+
+### L3: 生成代码 + 渲染验证
+
+**不是只写markdown完事。必须产出可执行代码并渲染出图让用户确认。**
+
+1. 写出Python脚本（复用 matplotlibrc 风格，放到 `/root/ops/plotting/templates/`）和/或R代码
+2. **执行代码，用mock数据渲染出PNG**（`python3 templates/xxx.py` 生成 `_demo.png`）
+3. 发图给用户看（Telegram发送图片或Gallery链接）
+4. 用户确认后才保存：
+   - 脚本存 `templates/`, mock数据存 `demo_data/`
+   - 更新 `catalog.yaml`
+   - recipe存 `references/`
+   - 重建Gallery并推送到HF Space
+5. 用户说修改 → 按反馈改 → 重新渲染 → 再审
+
+**⚠️ 只存markdown recipe不入库。入库=可执行脚本+用户确认过的图。**
+
+### L4: 保存
+
+经用户确认后才保存：
+
+**可执行层** (`/root/ops/plotting/`):
+```
+templates/new_chart.py      ← 可执行脚本，含 generate_mock_data() + plot()
+demo_data/new_chart_demo.tsv ← mock数据
+catalog.yaml                ← 更新数据类型→模板映射
+```
+
+**知识层** (`skill references/`):
+```
+references/new_chart.md     ← recipe文档（When/Learn/Code/Params/Pitfalls/Variants）
+```
+
+### L5: 应用
+
+后续绘图时，检查优先级：
+1. 当前项目是否已指定palette？用那个
+2. 用户是否为该图表类型发过示例图？优先用那个变体
+3. 跟数据/分析场景匹配的变体？用那个
+4. 都没有 → 用基础recipe + matplotlibrc默认风格
+
+---
+
+## 专业场景：APA与脑科学
+
+### 场景决策树
+
+```
+你研究什么？
+│
+├─ APA（可变聚腺苷酸化）
+│  ├─ PDUI跨条件对比 → apa_pattern (已有模板)
+│  ├─ PDUI分布比较 → box_violin (已有模板)
+│  ├─ 模式跨阶段流转 → sankey (已有模板)
+│  ├─ 3'UTR长度分布 → stacked_area (新增)
+│  ├─ 基因结构+APA位点 → gene_structure_apa (新增)
+│  ├─ 全生命周期PDUI变化 → lifespan_trajectory (新增)
+│  └─ APA事件基因集交集 → upset_plot (已有模板)
+│
+├─ 脑区表达分析
+│  ├─ 单脑区热图 → heatmap_clustered (已有模板)
+│  ├─ 多脑区热图+解剖标注 → brain_atlas_heatmap (新增)
+│  ├─ 脑区×发育阶段矩阵 → lifespan_trajectory (新增)
+│  └─ 单细胞marker → dot_plot_seurat (新增)
+│
+├─ 生命周期/发育
+│  ├─ 连续趋势(多轨迹) → lifespan_trajectory (新增)
+│  ├─ 组成比例变化 → stacked_area (新增)
+│  └─ 多时间点分布 → ridgeline (已有模板)
+│
+└─ 临床/预后
+   ├─ 生存分析 → km_survival (已有模板)
+   ├─ 诊断ROC → roc_curve (已有模板)
+   ├─ 多变量OR/HR → forest_plot (新增)
+   └─ 基因突变位点 → lollipop (新增)
+```
+
+### 项目配色（按项目锁定）
+
+**全生命周期APA项目（默认）**
+```python
+PROJECT_COLORS = {
+    "Fetal": "#4DBBD5",       # 蓝-胎期
+    "Neonatal": "#00A087",    # 绿-新生儿
+    "Child": "#3C5488",      # 深蓝-儿童
+    "Adolescent": "#F39B7F", # 粉橙-青少年
+    "Adult": "#E64B35",      # 红-成年
+    "Aged": "#8491B4",       # 灰紫-老年
+}
+PROJECT_CMAP = "mako"  # 连续色标(发育阶段)
+```
+
+```r
+project_colors <- c(
+  Fetal = "#4DBBD5", Neonatal = "#00A087", Child = "#3C5488",
+  Adolescent = "#F39B7F", Adult = "#E64B35", Aged = "#8491B4"
+)
+```
+
+**神经精神疾病项目**
+```python
+DISEASE_COLORS = {
+    "Control": "#3C5488",
+    "MDD": "#E64B35",
+    "SCZ": "#4DBBD5",
+    "BD": "#00A087",
+    "ASD": "#F39B7F",
+}
+```
+
+### 新增图表类型（优先级排序）
+
+| 图表 | 模板名 | 数据类型 | 用途 |
+|------|--------|---------|------|
+| 全生命周期轨迹 | `lifespan_trajectory` | lifespan_trajectory | PDUI/表达随年龄的多轨迹变化 |
+| 脑区热图+标注 | `brain_atlas_heatmap` | brain_region_matrix | 多脑区表达热图配解剖标注 |
+| 基因结构+APA | `gene_structure_apa` | gene_apa_structure | 基因exon-intron + 3'UTR APA位点 |
+| Seurat dot plot | `dot_plot_seurat` | marker_expression | 单细胞marker基因表达(点=比例,色=表达) |
+| Forest plot | `forest_plot` | meta_analysis | 多变量OR/HR及置信区间 |
+| Lollipop | `lollipop` | mutation_site | 基因突变/修饰位点标注 |
+| Stacked area | `stacked_area` | composition_over_time | 组成比例随时间变化(APA usage%) |
+| 染色体ideogram | `chromosome_ideogram` | genomic_region | 染色体区段标注(GWAS/QTL信号) |
+
+### 脑科学绘图关键约定
+
+1. **脑区命名统一**：使用Allen Brain Atlas标准名称(Frontal Cortex, Hippocampus, Cerebellum等)
+2. **发育阶段色彩**：同一项目使用`PROJECT_COLORS`，Fetal→Aged渐变，连续变量用`mako` cmap
+3. **3'UTR可视化**：exon用宽矩形，intron用细线(∩弧形表示)，PAS用▼三角标注，proximal=蓝，distal=红
+4. **生存曲线**：神经退行性疾病用橙色线，对照组用蓝色；P值放在右下角
+5. **脑区热图**：行按解剖位置排序(皮层上→皮层下→小脑)，不用默认聚类；列按发育阶段排
+
+---
 
 ## 反模式速查
 
@@ -344,7 +499,6 @@ cat /root/ops/plotting/gallery_feedback.jsonl
 
 ---
 
-
 ## Preset速查
 
 | Preset | 宽 | 高 | DPI | 最小字号 | 格式 |
@@ -357,7 +511,6 @@ cat /root/ops/plotting/gallery_feedback.jsonl
 完整规格+导出代码: [presets.md](references/presets.md)
 
 ---
-
 
 ## R/Python主题模板
 
@@ -413,6 +566,56 @@ matplotlib.rc_file(str(STYLE_PATH), plt.rcParams)
 
 ---
 
+## Gallery & 审核流程
+
+### 线上Gallery
+
+地址: Brain API `/gallery`（需auth token登录）
+
+Brain API已有完整Web看板体系：`/login` → `/dashboard`, `/quota`(号池), `/grok`, **`/gallery`**(绘图Gallery)。所有页面统一认证（token或密码），所有图片通过 `/gallery/static/` 按需加载。Gallery可按tag筛选，点击放大查看。
+
+访问方式：
+- 浏览器: `http://<server>:8080/login` → 登录 → 点击Gallery导航
+- API: `curl -H "Authorization: Bearer <token>" http://<server>:8080/gallery`
+
+⚠️ **所有web页面统一走Brain API**（8080端口），不在VPS开新端口，不在HF Space部署Gallery。
+
+### 审核入库流程
+
+Gallery每张demo图卡有三个交互按钮，通过 `/api/gallery/feedback` API写入反馈：
+- ✓ Approve → `{action: "approve"}`
+- ✎ Suggest → 展开textarea输入建议 → `{action: "suggest", suggestion: "..."}`
+- ✕ Reject → `{action: "reject"}`
+
+反馈记录在 `/root/ops/plotting/gallery_feedback.jsonl`。
+
+1. 生成新样图后，渲染demo保存到 `/root/ops/plotting/`
+2. 重启Brain API: `systemctl restart hermes-serve`
+3. 通知用户访问 `/gallery` 查看，点击按钮反馈
+4. 用户确认"可以/入库" → 执行：
+   - 脚本存 `templates/`, mock数据存 `demo_data/`
+   - 更新 `catalog.yaml`
+   - recipe存 `references/`
+5. 用户说修改 → 按反馈改 → 重新渲染 → 再审
+
+**未确认的图不入库。**
+
+### 更新Gallery流程
+
+```bash
+cd /root/ops/plotting
+for f in templates/*.py; do python3 "$f"; done
+systemctl restart hermes-serve
+# 验证
+curl -s -H "Authorization: Bearer <token>" http://127.0.0.1:8080/gallery | head -5
+```
+
+⚠️ **所有web页面统一走Brain API**（8080端口），不在VPS开新端口
+⚠️ **Gallery需认证**，无token返回401
+⚠️ **JS必须用 `extra_js` 参数传入 `_page()`** — f-string会破坏JS的`{{`/`}}`，见 `references/brain-gallery-deployment.md`
+⚠️ **浏览器fetch用 `credentials: 'same-origin'`** — httponly cookie不可JS读取，靠浏览器自动带cookie+Origin
+
+---
 
 ## 常见陷阱
 
@@ -437,20 +640,3 @@ matplotlib.rc_file(str(STYLE_PATH), plt.rcParams)
 | Gallery按钮没后端 | 必须接`/api/gallery/feedback`，纯前端装饰无用 |
 | localStorage状态丢失 | JS选择器类名必须与HTML完全匹配；绝不要inline onclick和addEventListener混用于同一行为 |
 | inline onclick和addEventListener打架 | 移除所有inline onclick，只用addEventListener统一管理状态+localStorage |
-## References
-
-Detailed guides and domain-specific content:
-
-- **[learning-protocol.md](references/learning-protocol.md)** — Figure learning protocol (L1-L5)
-- **[apa-neuroscience.md](references/apa-neuroscience.md)** — APA/neuroscience decision trees, project palettes, specialized chart types
-- **[gallery-workflow.md](references/gallery-workflow.md)** — Brain Gallery web UI, feedback loop, template updates
-- **[scatter.md](references/scatter.md)** — Scatter plot recipe (R + Python)
-- **[box_violin.md](references/box_violin.md)** — Box + violin plot recipe
-- **[volcano.md](references/volcano.md)** — Volcano plot recipe
-- **[heatmap.md](references/heatmap.md)** — Clustered heatmap recipe
-- **[enrichment_dot.md](references/enrichment_dot.md)** — Enrichment dot/bubble plot recipe
-- **[barplot.md](references/barplot.md)** — Bar plot recipe
-- **[presets.md](references/presets.md)** — Detailed preset specifications
-- **[telegram-chart-delivery.md](references/telegram-chart-delivery.md)** — Chart delivery via Telegram
-- **[brain-gallery-deployment.md](references/brain-gallery-deployment.md)** — Gallery deployment on Brain API
-- **[gallery-feedback-loop.md](references/gallery-feedback-loop.md)** — Feedback capture and template update process
