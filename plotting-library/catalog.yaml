@@ -1,6 +1,12 @@
 charts:
+# ═══════════════════════════════════════════
+# P0: Core charts (论文/组会高频)
+# ═══════════════════════════════════════════
+
 - name: volcano
   title: 火山图
+  tier: P0
+  status: done
   data_type: differential_expression
   columns:
   - log2FC
@@ -24,8 +30,11 @@ charts:
   - gradient_volcano: 渐变配色火山图
   - multi_group_volcano: 多组对比火山图
   demo: volcano_demo.png
+
 - name: manhattan
   title: Manhattan图
+  tier: P0
+  status: done
   data_type: qtl_gwas
   columns:
   - chr
@@ -52,8 +61,11 @@ charts:
   - manhattan_highlight: 标注候选位点
   - manhattan_annotated: 带基因注释
   demo: manhattan_demo.png
+
 - name: heatmap_clustered
   title: 聚类热图
+  tier: P0
+  status: done
   data_type: expression_matrix
   columns:
   - rows
@@ -77,67 +89,11 @@ charts:
   - heatmap_annotated: 带行/列注释条
   - heatmap_circular: 圆形热图
   demo: heatmap_demo.png
-- name: correlation_heatmap
-  title: 相关性热图
-  data_type: correlation_matrix
-  columns:
-  - var1
-  - var2
-  - correlation_coefficient
-  description: 展示变量间相关系数矩阵
-  recommended_for:
-  - 样本相关性
-  - 特征间关联
-  tags:
-  - 相关性
-  - 矩阵
-  - 热图
-  template: templates/correlation_heatmap.py
-  references:
-  - R2Omics
-  demo: correlation_heatmap_demo.png
-- name: apa_pattern
-  title: PDUI趋势对比图
-  data_type: apa_pattern_comparison
-  columns:
-  - gene
-  - PDUI_prenatal
-  - PDUI_postnatal
-  - category
-  description: 展示跨条件的PDUI模式变化（gain/loss/switch等分类散点），适用于APA及类似对比分析
-  recommended_for:
-  - APA趋势分析
-  - 发育阶段对比
-  tags:
-  - APA
-  - 发育
-  - 模式分类
-  - 散点
-  template: templates/apa_pattern.py
-  references:
-  - 自定义
-  demo: apa_pattern_demo.png
-- name: apa_sankey
-  title: 模式流转桑基图
-  data_type: apa_pattern_flow
-  columns:
-  - source
-  - target
-  - count
-  description: 展示分类模式在条件间的流转关系（桑基/冲积图），不限于APA
-  recommended_for:
-  - APA模式转换
-  - 阶段对比
-  tags:
-  - APA
-  - 桑基图
-  - 流转
-  template: templates/sankey.py
-  references:
-  - HiPlot
-  demo: sankey_demo.png
+
 - name: enrichment_bubble
   title: 富集气泡图
+  tier: P0
+  status: done
   data_type: enrichment_result
   columns:
   - term
@@ -159,49 +115,11 @@ charts:
   - R2Omics
   - HiPlot
   demo: enrichment_bubble_demo.png
-- name: enrichment_circos
-  title: 富集圈图
-  data_type: enrichment_result_multi
-  columns:
-  - term
-  - pvalue
-  - gene_ratio
-  - count
-  - category
-  description: 多类别富集结果的可视化圈图
-  recommended_for:
-  - 多维富集
-  - GO+KEGG联动
-  tags:
-  - 富集
-  - Circos
-  - 多类
-  template: templates/enrichment_circos.py
-  references:
-  - R2Omics
-  demo: enrichment_circos_demo.png
-- name: grouped_bar
-  title: 分组柱状图
-  data_type: grouped_comparison
-  columns:
-  - group
-  - category
-  - value
-  - error
-  description: 多组间数值比较，带误差线
-  recommended_for:
-  - 样本统计
-  - 分类比较
-  tags:
-  - 柱状图
-  - 分组
-  - 比较
-  template: templates/grouped_bar.py
-  references:
-  - R2Omics
-  demo: grouped_bar_demo.png
+
 - name: box_violin
   title: 箱线图+小提琴图
+  tier: P0
+  status: done
   data_type: distribution_comparison
   columns:
   - group
@@ -218,140 +136,11 @@ charts:
   references:
   - R2Omics
   demo: box_violin_demo.png
-- name: ridgeline
-  title: 山峦图
-  data_type: multi_distribution
-  columns:
-  - group
-  - value
-  description: 多组分布的脊线图，直观比较分布形态
-  recommended_for:
-  - 时间序列分布
-  - 多条件对比
-  tags:
-  - 分布
-  - 山峦图
-  - 趋势
-  template: templates/ridgeline.py
-  references:
-  - R2Omics
-  demo: ridgeline_demo.png
-- name: network_graph
-  title: 网络图
-  data_type: interaction_network
-  columns:
-  - source
-  - target
-  - weight
-  description: 节点-边关系可视化（基因互作、调控网络）
-  recommended_for:
-  - 基因调控
-  - PPI
-  - 共表达
-  tags:
-  - 网络
-  - 互作
-  - 调控
-  template: templates/network_graph.py
-  references:
-  - R2Omics
-  - HiPlot
-  demo: network_graph_demo.png
-- name: upset_plot
-  title: UpSet图
-  data_type: set_intersection
-  columns:
-  - element
-  - set_membership
-  description: 多集合交集可视化，替代韦恩图
-  recommended_for:
-  - 基因集交集
-  - APA共有/特有
-  tags:
-  - 韦恩
-  - 交集
-  - 集合
-  template: templates/upset_plot.py
-  references:
-  - R2Omics
-  demo: upset_demo.png
-- name: pca_plot
-  title: PCA降维图
-  data_type: dimensionality_reduction
-  columns:
-  - PC1
-  - PC2
-  - group_label
-  description: 主成分分析二维散点图
-  recommended_for:
-  - 样本聚类
-  - 批次效应检查
-  tags:
-  - PCA
-  - 降维
-  - 聚类
-  template: templates/pca_plot.py
-  references:
-  - R2Omics
-  - HiPlot
-  demo: pca_demo.png
-- name: umap_plot
-  title: UMAP图
-  data_type: dimensionality_reduction
-  columns:
-  - UMAP1
-  - UMAP2
-  - group_label
-  description: UMAP降维可视化（单细胞常用）
-  recommended_for:
-  - 单细胞
-  - 高维可视化
-  tags:
-  - UMAP
-  - 降维
-  - 单细胞
-  template: templates/umap_plot.py
-  demo: umap_demo.png
-- name: km_survival
-  title: KM生存曲线
-  data_type: survival_data
-  columns:
-  - time
-  - event
-  - group
-  description: Kaplan-Meier生存分析曲线
-  recommended_for:
-  - 临床预后
-  - 基因分组生存
-  tags:
-  - 生存
-  - 临床
-  - KM
-  template: templates/km_survival.py
-  references:
-  - R2Omics
-  demo: km_survival_demo.png
-- name: roc_curve
-  title: ROC曲线
-  data_type: classifier_performance
-  columns:
-  - fpr
-  - tpr
-  - auc
-  description: 分类器性能评估ROC曲线
-  recommended_for:
-  - 诊断模型
-  - 分类评估
-  tags:
-  - ROC
-  - AUC
-  - 分类
-  template: templates/roc_curve.py
-  references:
-  - R2Omics
-  demo: roc_demo.png
+
 - name: raincloud
   title: 云雨图
+  tier: P0
+  status: done
   data_type: distribution_comparison
   columns:
   - group
@@ -376,6 +165,743 @@ charts:
   - horizontal_raincloud: 水平云雨图(orientation=horizontal)
   - raincloud_no_violin: 纯box+jitter(无KDE)
   demo: raincloud_demo.png
+
+- name: pca_plot
+  title: PCA降维图
+  tier: P0
+  status: done
+  data_type: dimensionality_reduction
+  columns:
+  - PC1
+  - PC2
+  - group_label
+  description: 主成分分析二维散点图
+  recommended_for:
+  - 样本聚类
+  - 批次效应检查
+  tags:
+  - PCA
+  - 降维
+  - 聚类
+  template: templates/pca_plot.py
+  references:
+  - R2Omics
+  - HiPlot
+  demo: pca_demo.png
+
+- name: km_survival
+  title: KM生存曲线
+  tier: P0
+  status: done
+  data_type: survival_data
+  columns:
+  - time
+  - event
+  - group
+  description: Kaplan-Meier生存分析曲线
+  recommended_for:
+  - 临床预后
+  - 基因分组生存
+  tags:
+  - 生存
+  - 临床
+  - KM
+  template: templates/km_survival.py
+  references:
+  - R2Omics
+  demo: km_survival_demo.png
+
+# ═══════════════════════════════════════════
+# P1: Common charts (生信常用)
+# ═══════════════════════════════════════════
+
+- name: manhattan
+  title: Manhattan图
+  tier: P1
+  status: done
+  data_type: qtl_gwas
+  columns: [chr, pos, pvalue, snp_id]
+  description: GWAS/QTL全局显著性概览，突出峰值位点
+  tags: [QTL, GWAS, 全基因组, 散点]
+  template: templates/manhattan.py
+  demo: manhattan_demo.png
+
+- name: correlation_heatmap
+  title: 相关性热图
+  tier: P1
+  status: done
+  data_type: correlation_matrix
+  columns:
+  - var1
+  - var2
+  - correlation_coefficient
+  description: 展示变量间相关系数矩阵
+  tags:
+  - 相关性
+  - 矩阵
+  - 热图
+  template: templates/correlation_heatmap.py
+  references:
+  - R2Omics
+  demo: correlation_heatmap_demo.png
+
+- name: apa_pattern
+  title: PDUI趋势对比图
+  tier: P1
+  status: done
+  data_type: apa_pattern_comparison
+  columns:
+  - gene
+  - PDUI_prenatal
+  - PDUI_postnatal
+  - category
+  description: 展示跨条件的PDUI模式变化（gain/loss/switch等分类散点）
+  tags:
+  - APA
+  - 发育
+  - 模式分类
+  template: templates/apa_pattern.py
+  demo: apa_pattern_demo.png
+
+- name: apa_sankey
+  title: 模式流转桑基图
+  tier: P1
+  status: done
+  data_type: apa_pattern_flow
+  columns:
+  - source
+  - target
+  - count
+  description: 展示分类模式在条件间的流转关系（桑基/冲积图）
+  tags:
+  - APA
+  - 桑基图
+  - 流转
+  template: templates/sankey.py
+  demo: null  # Plotly — no PNG demo
+
+- name: enrichment_circos
+  title: 富集圈图
+  tier: P1
+  status: done
+  data_type: enrichment_result_multi
+  columns:
+  - term
+  - pvalue
+  - gene_ratio
+  - count
+  - category
+  description: 多类别富集结果的可视化圈图
+  tags:
+  - 富集
+  - Circos
+  - 多类
+  template: templates/enrichment_circos.py
+  demo: enrichment_circos_demo.png
+
+- name: grouped_bar
+  tier: P1
+  status: done
+  title: 分组柱状图
+  data_type: grouped_comparison
+  columns:
+  - group
+  - category
+  - value
+  - error
+  description: 多组间数值比较，带误差线
+  tags:
+  - 柱状图
+  - 分组
+  template: templates/grouped_bar.py
+  demo: grouped_bar_demo.png
+
+- name: ridgeline
+  title: 山峦图
+  tier: P1
+  status: done
+  data_type: multi_distribution
+  columns:
+  - group
+  - value
+  description: 多组分布的脊线图，直观比较分布形态
+  tags:
+  - 分布
+  - 山峦图
+  - 趋势
+  template: templates/ridgeline.py
+  demo: ridgeline_demo.png
+
+- name: network_graph
+  title: 网络图
+  tier: P1
+  status: done
+  data_type: interaction_network
+  columns:
+  - source
+  - target
+  - weight
+  description: 节点-边关系可视化（基因互作、调控网络）
+  tags:
+  - 网络
+  - 互作
+  - 调控
+  template: templates/network_graph.py
+  demo: network_graph_demo.png
+
+- name: upset_plot
+  title: UpSet图
+  tier: P1
+  status: done
+  data_type: set_intersection
+  columns:
+  - element
+  - set_membership
+  description: 多集合交集可视化，替代韦恩图
+  tags:
+  - 韦恩
+  - 交集
+  - 集合
+  template: templates/upset_plot.py
+  demo: upset_demo.png
+
+- name: umap_plot
+  title: UMAP图
+  tier: P1
+  status: done
+  data_type: dimensionality_reduction
+  columns:
+  - UMAP1
+  - UMAP2
+  - group_label
+  description: UMAP降维可视化（单细胞常用）
+  tags:
+  - UMAP
+  - 降维
+  - 单细胞
+  template: templates/umap_plot.py
+  demo: umap_demo.png
+
+- name: roc_curve
+  title: ROC曲线
+  tier: P1
+  status: done
+  data_type: classifier_performance
+  columns:
+  - fpr
+  - tpr
+  - auc
+  description: 分类器性能评估ROC曲线
+  tags:
+  - ROC
+  - AUC
+  - 分类
+  template: templates/roc_curve.py
+  demo: roc_demo.png
+
+# ── P0 Planned (来自三方调研，论文高频) ──────
+
+- name: forest_plot
+  title: 森林图
+  tier: P0
+  status: planned
+  data_type: meta_analysis
+  columns:
+  - variable
+  - estimate
+  - ci_lower
+  - ci_upper
+  description: Meta分析OR/HR及置信区间，临床预后标配
+  recommended_for:
+  - 临床预后
+  - 多变量OR/HR
+  - Meta分析
+  tags:
+  - 森林图
+  - HR
+  - 置信区间
+  references:
+  - SRplot
+  - Bioincloud
+
+- name: oncoplot
+  title: 肿瘤瀑布图
+  tier: P0
+  status: planned
+  data_type: mutation_matrix
+  columns:
+  - sample
+  - gene
+  - mutation_type
+  description: 肿瘤突变景观瀑布图，临床基因组学必备
+  recommended_for:
+  - 肿瘤基因组
+  - 突变景观
+  tags:
+  - 瀑布图
+  - Oncoplot
+  - 突变
+  references:
+  - SRplot
+  - Bioincloud
+
+- name: lollipop
+  title: 棒棒糖图
+  tier: P0
+  status: planned
+  data_type: mutation_site
+  columns:
+  - position
+  - type
+  - count
+  description: 基因突变/修饰位点标注，蛋白结构域标注
+  recommended_for:
+  - 基因突变位点
+  - 蛋白功能域
+  - 修饰位点
+  tags:
+  - 棒棒糖图
+  - 突变
+  - 位点标注
+  references:
+  - ChiPlot
+
+# ── P1 Planned (生信常用) ─────────────────────
+
+- name: chord_plot
+  title: 弦图
+  tier: P1
+  status: planned
+  data_type: gene_term_matrix
+  columns:
+  - gene
+  - term
+  - membership
+  description: Gene-Term关联弦图，GO/KEGG富集可视化
+  tags:
+  - 弦图
+  - GO
+  - KEGG
+  - 富集
+  references:
+  - SRplot
+
+- name: alluvial_plot
+  title: 冲积图
+  tier: P1
+  status: planned
+  data_type: group_flow
+  columns:
+  - sample
+  - group1
+  - group2
+  description: 分组流向冲积图，展示样本跨条件分类变化
+  tags:
+  - 冲积图
+  - 流向
+  - 分组
+  references:
+  - SRplot
+
+- name: gsea_plot
+  title: GSEA富集曲线
+  tier: P1
+  status: planned
+  data_type: gsea_result
+  columns:
+  - ranked_genes
+  - enrichment_score
+  - pvalue
+  description: 基因集富集分析标准可视化
+  tags:
+  - GSEA
+  - 富集
+  - 基因集
+  references:
+  - SRplot
+  - Bioincloud
+
+- name: qq_plot
+  title: QQ图
+  tier: P1
+  status: planned
+  data_type: pvalue_vector
+  columns:
+  - pvalue
+  description: P值分布QQ图，GWAS QC标配
+  tags:
+  - QQ
+  - p值
+  - GWAS
+  references:
+  - SRplot
+
+- name: dumbbell_plot
+  title: 哑铃图
+  tier: P1
+  status: planned
+  data_type: paired_comparison
+  columns:
+  - group
+  - value1
+  - value2
+  description: 配对比较哑铃图，前后或两组对比更直观
+  tags:
+  - 哑铃图
+  - 配对
+  - 对比
+  references:
+  - ChiPlot
+
+- name: stacked_bar
+  title: 堆叠柱状图
+  tier: P1
+  status: planned
+  data_type: composition
+  columns:
+  - category
+  - group
+  - value
+  description: 组成占比堆叠柱状图，物种组成/分类占比
+  tags:
+  - 堆叠
+  - 柱状图
+  - 组成
+  references:
+  - SRplot
+  - Bioincloud
+
+- name: bidirectional_bar
+  title: 左右双向柱状图
+  tier: P1
+  status: planned
+  data_type: bidirectional
+  columns:
+  - term
+  - up_value
+  - down_value
+  description: Up/Down对比的双向柱状图，多用于富集结果
+  tags:
+  - 双向
+  - 柱状图
+  - UpDown
+  references:
+  - SRplot
+
+- name: dot_plot_seurat
+  title: Seurat点图
+  tier: P1
+  status: planned
+  data_type: marker_expression
+  columns:
+  - gene
+  - cluster
+  - pct_expressed
+  - avg_expr
+  description: 单细胞marker基因表达(点=比例,色=表达)
+  tags:
+  - Seurat
+  - 单细胞
+  - marker
+  references:
+  - SRplot
+
+- name: stacked_area
+  title: 堆叠面积图
+  tier: P1
+  status: planned
+  data_type: composition_over_time
+  columns:
+  - timepoint
+  - category
+  - proportion
+  description: 组成比例随时间变化
+  tags:
+  - 面积图
+  - 组成
+  - 时间序列
+
+# ── P2 Planned (逐步扩展) ─────────────────────
+
+- name: go_triple_bar
+  title: GO三合一柱状图
+  tier: P2
+  status: planned
+  data_type: go_terms
+  columns:
+  - term
+  - category
+  - count
+  - pvalue
+  description: GO BP/CC/MF三大类合并展示柱状图
+  tags:
+  - GO
+  - 三合一
+  references:
+  - SRplot
+
+- name: ma_plot
+  title: MA图
+  tier: P2
+  status: planned
+  data_type: ma_data
+  columns:
+  - gene
+  - mean_expr
+  - log2fc
+  description: 转录组差异表达MA图，与volcano互补
+  tags:
+  - MA
+  - 差异表达
+  references:
+  - Bioincloud
+
+- name: radar_plot
+  title: 雷达图
+  tier: P2
+  status: planned
+  data_type: radar_data
+  columns:
+  - category
+  - dimension
+  - value
+  description: 多维特征雷达图
+  tags:
+  - 雷达图
+  - 多维
+  references:
+  - ChiPlot
+
+- name: circos_plot
+  title: 基因组圈图
+  tier: P2
+  status: planned
+  data_type: genomic_regions
+  columns:
+  - chr
+  - start
+  - end
+  - value
+  - category
+  description: 全基因组结构/变异环状展示
+  tags:
+  - Circos
+  - 基因组
+  references:
+  - ChiPlot
+  - Bioincloud
+
+- name: phylo_tree
+  title: 系统发育树
+  tier: P2
+  status: planned
+  data_type: newick_tree
+  columns:
+  - tree_string
+  - metadata
+  description: 进化树可视化，支持Normal/Circular/Unrooted布局
+  tags:
+  - 进化树
+  - 系统发育
+  references:
+  - ChiPlot
+
+- name: gene_cluster
+  title: 基因簇
+  tier: P2
+  status: planned
+  data_type: gene_clusters
+  columns:
+  - organism
+  - gene_start
+  - gene_end
+  - gene_name
+  - strand
+  description: 比较基因组学基因簇可视化
+  tags:
+  - 基因簇
+  - 比较基因组
+  references:
+  - ChiPlot
+
+- name: sunset_plot
+  title: 共线性图
+  tier: P2
+  status: planned
+  data_type: synteny_blocks
+  columns:
+  - chr1
+  - start1
+  - end1
+  - chr2
+  - start2
+  - end2
+  description: 基因组共线性分析(McScanX)
+  tags:
+  - 共线性
+  - McScanX
+  references:
+  - ChiPlot
+
+- name: ternary_plot
+  title: 三元相图
+  tier: P2
+  status: planned
+  data_type: ternary_data
+  columns:
+  - sample
+  - component1
+  - component2
+  - component3
+  description: 三组成分占比(物种/代谢物)
+  tags:
+  - 三元相图
+  - 组成
+  references:
+  - Bioincloud
+
+- name: circular_bar
+  title: 环状条形图
+  tier: P2
+  status: planned
+  data_type: circular_data
+  columns:
+  - category
+  - value
+  description: 物种丰度环状展示
+  tags:
+  - 环状
+  - 物种丰度
+  references:
+  - Bioincloud
+
+- name: circular_heatmap
+  title: 环状热图
+  tier: P2
+  status: planned
+  data_type: circular_matrix
+  columns:
+  - row
+  - column
+  - value
+  description: 热图环状变体
+  tags:
+  - 环状
+  - 热图
+  references:
+  - ChiPlot
+  - Bioincloud
+
+- name: "3d_scatter"
+  title: 三维散点图
+  tier: P2
+  status: planned
+  data_type: 3d_data
+  columns:
+  - x
+  - y
+  - z
+  - group
+  description: 3D PCA/3D UMAP
+  tags:
+  - 3D
+  - 降维
+  references:
+  - SRplot
+
+- name: risk_score
+  title: 风险得分三联图
+  tier: P2
+  status: planned
+  data_type: risk_data
+  columns:
+  - sample
+  - risk_score
+  - group
+  - survival_time
+  - event
+  description: 风险得分+生存+热图三联图，临床预后建模标配
+  tags:
+  - 风险得分
+  - 预后
+  - 三联图
+  references:
+  - SRplot
+
+- name: chromosome_ideogram
+  title: 染色体ideogram
+  tier: P2
+  status: planned
+  data_type: genomic_region
+  columns:
+  - chr
+  - start
+  - end
+  - label
+  - category
+  description: 染色体区段标注，GWAS/QTL信号可视化
+  tags:
+  - 染色体
+  - ideogram
+  references:
+  - SRplot
+
+# ═══════════════════════════════════════════════════
+# APA/Neuroscience Priority (自定义特殊图)
+# ═══════════════════════════════════════════════════
+
+- name: lifespan_trajectory
+  title: 全生命周期轨迹图
+  tier: P1
+  status: planned
+  data_type: lifespan_trajectory
+  columns:
+  - gene
+  - stage
+  - value
+  - brain_region
+  description: PDUI/expression随发育阶段变化的多轨迹线图
+  tags:
+  - APA
+  - 发育
+  - 轨迹
+  - 脑区
+
+- name: brain_atlas_heatmap
+  title: 脑区热图
+  tier: P1
+  status: planned
+  data_type: brain_region_matrix
+  columns:
+  - gene
+  - region
+  - value
+  description: 多脑区表达热图，行按解剖位置排序
+  tags:
+  - 脑区
+  - 热图
+  - 解剖
+
+- name: gene_structure_apa
+  title: 基因结构+APA位点图
+  tier: P1
+  status: planned
+  data_type: gene_apa_structure
+  columns:
+  - exon_starts
+  - exon_ends
+  - pas_positions
+  - pas_types
+  description: 基因exon-intron结构+3'UTR APA位点标注
+  tags:
+  - APA
+  - 基因结构
+  - 3'UTR
+
+# ═══════════════════════════════════════════════════
+# 数据类型定义
+# ═══════════════════════════════════════════════════
+
 data_types:
   differential_expression:
     description: 差异表达/差异分析结果
@@ -486,3 +1012,33 @@ data_types:
     - auc
     - threshold
     example: roc_demo.tsv
+  multi_distribution:
+    description: 多组分布数据
+    required_columns:
+    - group
+    - value
+    example: ridgeline_demo.tsv
+  correlation_matrix:
+    description: 相关系数矩阵
+    required_columns:
+    - var1
+    - var2
+    - correlation_coefficient
+    example: correlation_heatmap_demo.tsv
+  apa_pattern_flow:
+    description: APA模式流转数据
+    required_columns:
+    - source
+    - target
+    - count
+    example: sankey_demo.tsv
+  enrichment_result_multi:
+    description: 多类别富集结果
+    required_columns:
+    - term
+    - pvalue
+    - gene_ratio
+    optional_columns:
+    - count
+    - category
+    example: enrichment_circos_demo.tsv
