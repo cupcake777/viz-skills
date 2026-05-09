@@ -272,4 +272,4 @@ def plot(df, group_col="group", value_col="value", order=None,
 if __name__ == "__main__":
     df = generate_mock_data()
     plot(df, save_path="raincloud_demo.png")
-    plt.close()
+    plt.close()# Gallery API sync test
