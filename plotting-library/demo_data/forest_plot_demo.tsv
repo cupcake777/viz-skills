@@ -1,0 +1,9 @@
+variable	estimate	ci_lower	ci_upper	pvalue
+Age (>65)	1.45	1.10	1.92	0.008
+Sex (M)	1.12	0.89	1.41	0.224
+Stage (III/IV)	2.31	1.72	3.10	0.00001
+TP53 mutation	1.87	1.42	2.46	0.0003
+BRAF mutation	0.73	0.55	0.97	0.031
+BMI (>30)	0.91	0.68	1.22	0.542
+Smoking	1.56	1.12	2.17	0.009
+APA lengthening	1.68	1.28	2.20	0.0002

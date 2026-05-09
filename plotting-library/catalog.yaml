@@ -232,7 +232,7 @@ charts:
   - 网络/关系
   - 桑基
   template: templates/sankey.py
-  demo: null
+  demo: sankey_demo.png
 - name: enrichment_circos
   title: 富集圈图
   tier: P1
@@ -342,7 +342,7 @@ charts:
 - name: forest_plot
   title: 森林图
   tier: P0
-  status: planned
+  status: done
   data_type: meta_analysis
   columns:
   - variable
@@ -357,13 +357,18 @@ charts:
   tags:
   - 临床
   - 森林图
+  template: templates/forest_plot.R
   references:
   - SRplot
   - Bioincloud
+  variations:
+  - forest_subgroup: 分组森林图(按亚组着色+异质性检验)
+  - forest_cumulative: 累积Meta森林图
+  demo: forest_plot_demo.png
 - name: oncoplot
   title: 肿瘤瀑布图
   tier: P0
-  status: planned
+  status: done
   data_type: mutation_matrix
   columns:
   - sample
@@ -379,16 +384,21 @@ charts:
   references:
   - SRplot
   - Bioincloud
+  variations:
+  - oncoplot_clinical: 带临床注释条(ClinicalOncoplot)
+  - oncoplot_sbs: 单样本瀑布图(仅1个样本)
+  demo: oncoplot_demo.png
 - name: lollipop
   title: 棒棒糖图
   tier: P0
-  status: planned
+  status: done
   data_type: mutation_site
   columns:
   - position
-  - type
   - count
-  description: 基因突变/修饰位点标注，蛋白结构域标注
+  - type
+  - label
+  description: 基因突变/修饰位点标注，蛋白结构域+突变频率
   recommended_for:
   - 基因突变位点
   - 蛋白功能域
@@ -398,6 +408,10 @@ charts:
   - 位点标注
   references:
   - ChiPlot
+  variations:
+  - lollipop_domain: 带蛋白结构域注释
+  - lollipop_multi_gene: 多基因面板对比
+  demo: lollipop_demo.png
 - name: chord_plot
   title: 弦图
   tier: P1
@@ -922,3 +936,33 @@ data_types:
     - count
     - category
     example: enrichment_circos_demo.tsv
+  meta_analysis:
+    description: Meta分析/多变量回归结果(OR/HR+CI)
+    required_columns:
+    - variable
+    - estimate
+    - ci_lower
+    - ci_upper
+    optional_columns:
+    - pvalue
+    - group
+    - weight
+    example: forest_plot_demo.tsv
+  mutation_matrix:
+    description: '肿瘤突变景观矩阵(长格式: sample-gene-type)'
+    required_columns:
+    - sample
+    - gene
+    - mutation_type
+    optional_columns:
+    - frequency
+    example: oncoplot_demo.tsv
+  mutation_site:
+    description: 基因突变/修饰位点数据
+    required_columns:
+    - position
+    - count
+    optional_columns:
+    - type
+    - label
+    example: lollipop_demo.tsv
