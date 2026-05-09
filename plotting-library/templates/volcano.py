@@ -144,4 +144,3 @@ def plot(df, fc_col="log2FC", pval_col="pvalue", label_col="gene_label",
 if __name__ == "__main__":
     df = generate_mock_data()
     ax = plot(df, save_path="volcano_demo.png")
-    plt.close()# Gallery API test
