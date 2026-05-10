@@ -10,6 +10,7 @@
 参考: HiPlot, matplotlib sankey
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -18,16 +19,20 @@ import matplotlib.patches as mpatches
 from matplotlib.sankey import Sankey as MplSankey
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, APA_PATTERN_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, APA_PATTERN_COLORS, polish_legend
 
 # ============ 参数配置 ============
 
+_npg = get_palette("npg")
+_okabe = get_palette("okabe_ito")
 PATTERN_COLORS = {
-    "CONSISTENT_GAIN": "#E64B35",
-    "CONSISTENT_LOSS": "#3C5488",
-    "SEQUENTIAL_APA_SWITCH": "#4DBBD5",
-    "COMPETITIVE_APA_REG": "#00A087",
-    "REVERSAL": "#F39B7F",
+    "CONSISTENT_GAIN": _npg[0],
+    "CONSISTENT_LOSS": _npg[3],
+    "SEQUENTIAL_APA_SWITCH": _npg[1],
+    "COMPETITIVE_APA_REG": _npg[2],
+    "REVERSAL": _npg[4],
     "NOISY_UNSTABLE": "#CCCCCC",
 }
 
@@ -180,6 +185,8 @@ def plot(df, source_col="source", target_col="target", value_col="value",
     ax.set_title(title, fontsize=title_fs, pad=15)
     ax.axis("off")
 
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(fig, Path(save_path).stem.replace("_demo", ""), transparent=False)
 
@@ -209,6 +216,11 @@ def _short_label(name):
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="sankey_demo.png")
-    plt.close()
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

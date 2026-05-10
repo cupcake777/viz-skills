@@ -10,12 +10,15 @@
 参考: Nature Methods, ggplot2 violin+box
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 GROUP_NAMES = ["Prenatal", "Adult", "Senile", "Disease"]
@@ -99,6 +102,9 @@ def plot(df, group_col="group", value_col="value", order=None,
     ax.set_ylabel("Expression Level (log₂ TPM)")
     ax.set_title("Gene Expression Distribution by Developmental Stage")
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="best")
+
     # 添加样本量标注
     for i, grp in enumerate(order):
         n = (df[group_col] == grp).sum()
@@ -112,6 +118,11 @@ def plot(df, group_col="group", value_col="value", order=None,
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="box_violin_demo.png")
-    plt.close()
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

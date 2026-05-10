@@ -10,6 +10,7 @@
 参考: seaborn.clustermap, Nature Methods
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -17,7 +18,9 @@ from pathlib import Path
 from scipy.cluster.hierarchy import linkage, leaves_list
 from scipy.spatial.distance import squareform
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend
 
 # ============ 参数配置 ============
 
@@ -124,6 +127,8 @@ def plot(df, mask_upper=True, cluster=True, method="ward",
 
     ax.set_title("Gene Expression Correlation Heatmap", pad=12)
 
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(ax.figure, Path(save_path).stem.replace("_demo", ""),
                  transparent=False)
@@ -131,6 +136,11 @@ def plot(df, mask_upper=True, cluster=True, method="ward",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="correlation_heatmap_demo.png")
-    plt.close()
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

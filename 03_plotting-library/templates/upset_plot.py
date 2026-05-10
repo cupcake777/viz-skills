@@ -10,6 +10,7 @@ UpSet图 (UpSet Plot)
 参考: UpSetR, ComplexUpset
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -18,19 +19,22 @@ from matplotlib import rc_params_from_file
 from itertools import combinations
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, NATURE_COLORS, polish_legend
 
 # ============ 参数配置 ============
 
-# Nature 配色
+# Nature 配色 — from npg palette
+_npg = get_palette("npg")
 DOT_COLOR = "#333333"
-BAR_COLOR = "#3C5488"
+BAR_COLOR = _npg[3]
 SET_COLORS = {
-    "Stage_E15": "#E64B35",
-    "Stage_P1": "#4DBBD5",
-    "Stage_P30": "#00A087",
-    "Stage_Adult": "#3C5488",
-    "Stage_Elderly": "#F39B7F",
+    "Stage_E15": _npg[0],
+    "Stage_P1": _npg[1],
+    "Stage_P30": _npg[2],
+    "Stage_Adult": _npg[3],
+    "Stage_Elderly": _npg[4],
 }
 
 
@@ -119,7 +123,7 @@ def plot(df, set_names=None, min_size=1, top_n=20,
     save_path : str, 保存路径
     ax : matplotlib Axes, 可选 (此图不使用ax参数，总是创建新figure)
     """
-    # 加载风格    load_sci_style(preset)
+    load_sci_style(preset)
 
     if set_names is None:
         set_names = [c for c in df.columns if c != "gene"]
@@ -213,6 +217,9 @@ def plot(df, set_names=None, min_size=1, top_n=20,
     fig.suptitle("UpSet Plot — Developmental Stage Gene Overlap",
                  fontsize=13, y=0.98)
 
+    for a in fig.axes:
+        polish_legend(a, loc="best")
+
     # Use savefig bbox_inches='tight' instead of tight_layout for GridSpec layouts
     if save_path:
         save_fig(fig, Path(save_path).stem.replace("_demo", ""), transparent=False)
@@ -221,6 +228,11 @@ def plot(df, set_names=None, min_size=1, top_n=20,
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df, names = generate_mock_data()
-    plot(df, set_names=names, save_path="upset_demo.png")
-    plt.close()
+    fig = plot(df, set_names=names, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(fig, name, dpi=180, fmt="both")
+    plt.close(fig)

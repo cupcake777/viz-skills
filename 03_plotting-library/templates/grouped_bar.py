@@ -10,12 +10,15 @@
 参考: R2Omics
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 BAR_WIDTH = 0.8       # 组内柱宽系数
@@ -112,6 +115,9 @@ def plot(df, group_col="group", cat_col="category", val_col="value",
     ax.set_title("Grouped Bar Plot")
     ax.legend(title=group_col)
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(ax.figure, Path(save_path).stem.replace("_demo", ""),
                  transparent=False)
@@ -119,6 +125,11 @@ def plot(df, group_col="group", cat_col="category", val_col="value",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, sig_col="significance", add_numbers=True, save_path="grouped_bar_demo.png")
-    plt.close()
+    ax = plot(df, sig_col="significance", add_numbers=True, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

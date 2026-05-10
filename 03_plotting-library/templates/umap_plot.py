@@ -10,23 +10,27 @@ UMAP散点图 (UMAP 2D Scatter Plot)
 参考: Seurat DimPlot, Scanpy pl.umap
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 
 # Nature 配色
 
+_npg = get_palette("npg")
 CELL_TYPE_CONFIG = {
-    "Neuron":          {"color": "#E64B35", "center": (3, 4), "spread": (1.2, 1.0)},
-    "Astrocyte":       {"color": "#4DBBD5", "center": (-4, 2), "spread": (1.0, 1.3)},
-    "Oligodendrocyte": {"color": "#00A087", "center": (0, -4), "spread": (1.4, 0.9)},
-    "Microglia":       {"color": "#3C5488", "center": (-3, -2), "spread": (0.9, 1.1)},
+    "Neuron":          {"color": _npg[0], "center": (3, 4), "spread": (1.2, 1.0)},
+    "Astrocyte":       {"color": _npg[1], "center": (-4, 2), "spread": (1.0, 1.3)},
+    "Oligodendrocyte": {"color": _npg[2], "center": (0, -4), "spread": (1.4, 0.9)},
+    "Microglia":       {"color": _npg[3], "center": (-3, -2), "spread": (0.9, 1.1)},
 }
 
 
@@ -93,7 +97,7 @@ def plot(df, x_col="UMAP1", y_col="UMAP2", group_col="cell_type",
     save_path : str, 保存路径
     ax : matplotlib Axes, 可选
     """
-    # 加载风格    load_sci_style(preset)
+    load_sci_style(preset)
 
     if colors is None:
         colors = {ct: cfg["color"] for ct, cfg in CELL_TYPE_CONFIG.items()}
@@ -126,6 +130,9 @@ def plot(df, x_col="UMAP1", y_col="UMAP2", group_col="cell_type",
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(fig, Path(save_path).stem.replace("_demo", ""), transparent=False)
         print(f"Saved to {save_path}")
@@ -133,6 +140,11 @@ def plot(df, x_col="UMAP1", y_col="UMAP2", group_col="cell_type",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="umap_demo.png")
-    plt.close()
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

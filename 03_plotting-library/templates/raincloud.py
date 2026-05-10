@@ -12,13 +12,16 @@
       SRplot #093, ChiPlot, Bioincloud
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 from scipy.stats import gaussian_kde
 
-from base_plot import load_sci_style, save_fig, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 GROUP_NAMES = ["Prenatal", "Adult", "Senile", "Disease"]
@@ -263,6 +266,9 @@ def plot(df, group_col="group", value_col="value", order=None,
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(ax.figure, Path(save_path).stem.replace("_demo", ""),
                  transparent=False)
@@ -270,6 +276,11 @@ def plot(df, group_col="group", value_col="value", order=None,
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="raincloud_demo.png")
-    plt.close()# Gallery API sync test
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

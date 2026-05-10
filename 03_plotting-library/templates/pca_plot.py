@@ -10,13 +10,16 @@ PCA 散点图 (PCA Scatter Plot)
 参考: DESeq2 plotPCA, Seurat DimPlot
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 GROUPS = ["Control", "Treatment_A", "Treatment_B"]
@@ -128,6 +131,9 @@ def plot(df, pc1_col="PC1", pc2_col="PC2", group_col="group",
     ax.axhline(0, color="grey", linewidth=0.3, linestyle="-")
     ax.axvline(0, color="grey", linewidth=0.3, linestyle="-")
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(ax.figure, Path(save_path).stem.replace("_demo", ""),
                  transparent=False)
@@ -135,6 +141,11 @@ def plot(df, pc1_col="PC1", pc2_col="PC2", group_col="group",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df, v1, v2 = generate_mock_data()
-    plot(df, var_pc1=v1, var_pc2=v2, save_path="pca_demo.png")
-    plt.close()
+    ax = plot(df, var_pc1=v1, var_pc2=v2, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

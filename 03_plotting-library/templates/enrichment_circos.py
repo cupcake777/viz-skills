@@ -10,22 +10,26 @@
 参考: clusterProfiler, enrichplot
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend
 
 # ============ 参数配置 ============
 
-# Nature 配色
+# Nature 配色 — from npg palette
+_npg = get_palette("npg")
 CATEGORY_COLORS = {
-    "BP": "#E64B35",  # Biological Process
-    "CC": "#4DBBD5",  # Cellular Component
-    "MF": "#00A087",  # Molecular Function
+    "BP": _npg[0],  # Biological Process
+    "CC": _npg[1],  # Cellular Component
+    "MF": _npg[2],  # Molecular Function
 }
-EDGE_COLOR = "#3C5488"
+EDGE_COLOR = _npg[3]
 
 
 def generate_mock_data(n_terms_per_cat=5, seed=42):
@@ -193,6 +197,8 @@ def plot(df, term_col="term", category_col="category", pval_col="pvalue",
     ax.grid(False)
     ax.set_title("GO Enrichment Circos Plot", pad=25)
 
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(ax.figure, Path(save_path).stem.replace("_demo", ""),
                  transparent=False)
@@ -200,6 +206,11 @@ def plot(df, term_col="term", category_col="category", pval_col="pvalue",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="enrichment_circos_demo.png")
-    plt.close()
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

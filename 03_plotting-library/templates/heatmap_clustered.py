@@ -10,13 +10,16 @@
 参考: R2Omics, HiPlot, seaborn.clustermap
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend
 
 # ============ 参数配置 ============
 CMAP_DEFAULT = "RdBu_r"           # 红蓝渐变
@@ -75,12 +78,13 @@ def plot(df, row_ann=None, col_ann=None,
     # 解决 seaborn clustermap 与 constrained_layout 的兼容性
     plt.rcParams['figure.constrained_layout.use'] = False
 
-    # 注释配色
+    # 注释配色 — from npg palette
+    _npg = get_palette("npg")
     ann_colors = {
-        "Cluster_A": "#E64B35", "Cluster_B": "#4DBBD5", "Cluster_C": "#00A087",
-        "Cluster_D": "#3C5488", "Cluster_E": "#F39B7F",
-        "Prenatal": "#E64B35", "Postnatal": "#4DBBD5",
-        "Male": "#3C5488", "Female": "#F39B7F",
+        "Cluster_A": _npg[0], "Cluster_B": _npg[1], "Cluster_C": _npg[2],
+        "Cluster_D": _npg[3], "Cluster_E": _npg[4],
+        "Prenatal": _npg[0], "Postnatal": _npg[1],
+        "Male": _npg[3], "Female": _npg[4],
     }
 
     row_colors = None
@@ -104,6 +108,9 @@ def plot(df, row_ann=None, col_ann=None,
 
     g.fig.suptitle("Clustered Heatmap", y=1.02)
 
+    for a in g.fig.axes:
+        polish_legend(a, loc="best")
+
     if save_path:
         save_fig(g.fig, Path(save_path).stem.replace("_demo", ""),
                  transparent=False)
@@ -111,6 +118,11 @@ def plot(df, row_ann=None, col_ann=None,
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df, row_ann, col_ann = generate_mock_data()
-    plot(df, row_ann=row_ann, col_ann=col_ann, save_path="heatmap_demo.png")
-    plt.close()
+    g = plot(df, row_ann=row_ann, col_ann=col_ann, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(g.fig, name, dpi=180, fmt="both")
+    plt.close(g.fig)

@@ -10,21 +10,25 @@ ROC曲线 (ROC Curve with AUC)
 参考: scikit-learn, pROC
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 
 # Nature 配色
 
+_npg = get_palette("npg")
 CLASSIFIER_CONFIG = {
-    "Logistic Regression": {"auc": 0.92, "color": "#E64B35", "style": "-"},
-    "Random Forest":       {"auc": 0.88, "color": "#4DBBD5", "style": "-"},
-    "SVM (RBF kernel)":    {"auc": 0.78, "color": "#00A087", "style": "-"},
+    "Logistic Regression": {"auc": 0.92, "color": _npg[0], "style": "-"},
+    "Random Forest":       {"auc": 0.88, "color": _npg[1], "style": "-"},
+    "SVM (RBF kernel)":    {"auc": 0.78, "color": _npg[2], "style": "-"},
 }
 
 
@@ -94,7 +98,7 @@ def plot(df, fpr_col="fpr", tpr_col="tpr", group_col="classifier",
     save_path : str, 保存路径
     ax : matplotlib Axes, 可选
     """
-    # 加载风格    load_sci_style(preset)
+    load_sci_style(preset)
 
     classifiers = df[group_col].unique().tolist()
 
@@ -151,6 +155,9 @@ def plot(df, fpr_col="fpr", tpr_col="tpr", group_col="classifier",
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="lower right")
+
     if save_path:
         save_fig(fig, Path(save_path).stem.replace("_demo", ""), transparent=False)
         print(f"Saved to {save_path}")
@@ -158,6 +165,11 @@ def plot(df, fpr_col="fpr", tpr_col="tpr", group_col="classifier",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="roc_demo.png")
-    plt.close()
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

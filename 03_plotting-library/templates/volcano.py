@@ -10,13 +10,16 @@
 参考: R2Omics, HiPlot
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 STYLE_PATH = Path(__file__).parent.parent / "style" / "matplotlibrc"
@@ -28,10 +31,11 @@ LABEL_TOP_N = 10        # 标注top N基因
 ALPHA_NS = 0.3          # 不显著点透明度
 ALPHA_SIG = 0.85        # 显著点透明度
 
-# 配色（Nature风格）
-COLOR_UP = "#E64B35"    # 上调 - 红色
-COLOR_DOWN = "#3C5488"  # 下调 - 深蓝
-COLOR_NS = "#DBDBDB"   # 不显著 - 浅灰（不是#CCC，更淡）
+# 配色（Nature风格 — from volcano palette）
+_volcano_pal = get_palette("volcano_up_down_ns")
+COLOR_UP = _volcano_pal[0]     # Up-regulated (vermillion)
+COLOR_DOWN = _volcano_pal[1]   # Down-regulated (blue)
+COLOR_NS = _volcano_pal[2]     # Not significant (grey)
 
 
 def generate_mock_data(n=3000, seed=42):
@@ -133,6 +137,9 @@ def plot(df, fc_col="log2FC", pval_col="pvalue", label_col="gene_label",
               [l for l, m in zip(labels, sig_mask) if m],
               frameon=False, loc="best", borderpad=0.3)
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(ax.figure if external_ax else fig, 
                  Path(save_path).stem.replace("_demo", ""),
@@ -142,5 +149,12 @@ def plot(df, fc_col="log2FC", pval_col="pvalue", label_col="gene_label",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    ax = plot(df, save_path="volcano_demo.png")
+    fig, ax = plt.subplots()
+    ax = plot(df, preset="gallery", ax=ax)
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

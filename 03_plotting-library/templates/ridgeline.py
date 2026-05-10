@@ -10,13 +10,16 @@
 参考: ggridge, Joy Division Album Cover
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 from scipy.stats import gaussian_kde
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 STAGES = ["E15", "P1", "P7", "P30", "Adult", "Elderly"]
@@ -122,6 +125,9 @@ def plot(df, stage_col="stage", value_col="value", stages=None,
     ax.spines["right"].set_visible(False)
     ax.spines["top"].set_visible(False)
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(ax.figure, Path(save_path).stem.replace("_demo", ""),
                  transparent=False)
@@ -129,6 +135,11 @@ def plot(df, stage_col="stage", value_col="value", stages=None,
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="ridgeline_demo.png")
-    plt.close()
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

@@ -10,18 +10,22 @@ Manhattan图 (Manhattan Plot)
 参考: qqman(R), HiPlot
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 GENOME_LINE = 5e-8          # 全基因组显著性阈值
 SUGGESTIVE_LINE = 1e-5      # 建议性阈值
-CHR_COLORS = ["#4DBBD5", "#E64B35"]  # 交替染色体配色
-HIGHLIGHT_COLOR = "#DC0000"
+_gwas_pal = get_palette("gwas_significance", as_list=False)["colors"]
+CHR_COLORS = [_gwas_pal["chr_even"], _gwas_pal["chr_odd"]]
+HIGHLIGHT_COLOR = _gwas_pal["genome_wide_line"]
 
 
 def generate_mock_data(n_per_chr=5000, n_chr=22, seed=42):
@@ -128,6 +132,9 @@ def plot(df, chr_col="chr", pos_col="pos", pval_col="pvalue",
     ax.set_ylabel("-log₁₀(p-value)")
     ax.set_title("Manhattan Plot")
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(ax.figure, Path(save_path).stem.replace("_demo", ""),
                  transparent=False)
@@ -135,6 +142,11 @@ def plot(df, chr_col="chr", pos_col="pos", pval_col="pvalue",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, snp_col="snp_id", save_path="manhattan_demo.png")
-    plt.close()
+    ax = plot(df, snp_col="snp_id", preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

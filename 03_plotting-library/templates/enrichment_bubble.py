@@ -10,12 +10,15 @@
 参考: R2Omics, HiPlot, clusterProfiler
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 SHOW_TOP_N = 20       # 显示top N条目
@@ -80,9 +83,9 @@ def plot(df, term_col="term", pval_col="pvalue", ratio_col="gene_ratio",
     if ax is None:
         fig, ax = plt.subplots(figsize=figsize)
 
-    # 按类别着色
-    cat_palette = {"BP": "#E64B35", "MF": "#4DBBD5", "CC": "#00A087",
-                   "KEGG": "#3C5488", "Reactome": "#F39B7F"}
+    # 按类别着色 — from NATURE_COLORS
+    cat_palette = {"BP": NATURE_COLORS[0], "MF": NATURE_COLORS[1], "CC": NATURE_COLORS[2],
+                   "KEGG": NATURE_COLORS[3], "Reactome": NATURE_COLORS[4]}
 
     if cat_col and cat_col in df.columns:
         for cat, grp in df.groupby(cat_col):
@@ -106,6 +109,9 @@ def plot(df, term_col="term", pval_col="pvalue", ratio_col="gene_ratio",
     if cat_col and cat_col in df.columns:
         ax.legend(title=cat_col)
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(ax.figure, Path(save_path).stem.replace("_demo", ""),
                  transparent=False)
@@ -113,6 +119,11 @@ def plot(df, term_col="term", pval_col="pvalue", ratio_col="gene_ratio",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="enrichment_bubble_demo.png")
-    plt.close()
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

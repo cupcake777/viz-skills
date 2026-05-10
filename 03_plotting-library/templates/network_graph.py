@@ -11,13 +11,16 @@
 参考: Cytoscape, STRING network
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 GENE_NAMES = [
@@ -185,6 +188,9 @@ def plot(nodes_df, edges_df, node_col="node_id", weight_col="weight",
     for spine in ax.spines.values():
         spine.set_visible(False)
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="best")
+
     if save_path:
         save_fig(ax.figure, Path(save_path).stem.replace("_demo", ""),
                  transparent=False)
@@ -192,6 +198,11 @@ def plot(nodes_df, edges_df, node_col="node_id", weight_col="weight",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     nodes, edges = generate_mock_data()
-    plot(nodes, edges, save_path="network_graph_demo.png")
-    plt.close()
+    ax = plot(nodes, edges, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

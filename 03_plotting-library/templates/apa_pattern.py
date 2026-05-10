@@ -10,26 +10,31 @@ APA模式图 (APA Pattern Scatter)
 参考: 自定义（WCPG项目特有）
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 P_THRESHOLD = 0.05
 FC_THRESHOLD = 0.1  # PDUI差异阈值
 
-# APA模式配色
+# APA模式配色 — from apa_pattern palette + npg
+_apa_pal = get_palette("apa_pattern", as_list=False)["colors"]
+_npg = get_palette("npg")
 PATTERN_COLORS = {
-    "CONSISTENT_GAIN": "#E64B35",     # 持续延长
-    "CONSISTENT_LOSS": "#3C5488",      # 持续缩短
-    "SEQUENTIAL_APA_SWITCH": "#4DBBD5",# 顺式切换
-    "COMPETITIVE_APA_REG": "#00A087",  # 竞争性调控
-    "REVERSAL": "#F39B7F",            # 反转
-    "NOISY_UNSTABLE": ".6",           # 噪声/不稳定
-    "NS": ".8",                        # 不显著
+    "CONSISTENT_GAIN": _apa_pal["proximal"],
+    "CONSISTENT_LOSS": _apa_pal["distal"],
+    "SEQUENTIAL_APA_SWITCH": _npg[1],
+    "COMPETITIVE_APA_REG": _npg[2],
+    "REVERSAL": _npg[4],
+    "NOISY_UNSTABLE": ".6",
+    "NS": ".8",
 }
 
 
@@ -123,6 +128,9 @@ def plot(df, x_col="PDUI_prenatal", y_col="PDUI_postnatal",
     ax.set_title("APA Pattern Comparison")
     ax.set_aspect("equal")
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="upper left", ncol=2)
+
     # 图例
     handles, labels = ax.get_legend_handles_labels()
     legend_labels = []
@@ -139,6 +147,11 @@ def plot(df, x_col="PDUI_prenatal", y_col="PDUI_postnatal",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="apa_pattern_demo.png")
-    plt.close()
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)

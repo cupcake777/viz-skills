@@ -10,12 +10,15 @@ Kaplan-Meier 生存曲线 (KM Survival Curve)
 参考: lifelines.KaplanMeierFitter, survminer
 """
 
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS
+sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
+from color_palettes import get_palette
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
 
 # ============ 参数配置 ============
 GROUPS = ["Low_expr", "Medium_expr", "High_expr"]
@@ -208,6 +211,9 @@ def plot(df, time_col="time", event_col="event", group_col="group",
     ax.legend(title="Group", frameon=True, loc="lower left")
     ax.set_xlim(0, None)
 
+    apply_gallery_polish(ax)
+    polish_legend(ax, loc="lower left")
+
     # 删失标记
     for i, grp in enumerate(groups):
         t, e = km_data[grp]
@@ -266,6 +272,11 @@ def plot(df, time_col="time", event_col="event", group_col="group",
 
 
 if __name__ == "__main__":
+    from base_plot import load_sci_style, save_fig
+    sys.path.insert(0, str(Path(__file__).parent))
+    load_sci_style("gallery")
     df = generate_mock_data()
-    plot(df, save_path="km_survival_demo.png")
-    plt.close()
+    ax = plot(df, preset="gallery")
+    name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
+    save_fig(ax.figure, name, dpi=180, fmt="both")
+    plt.close(ax.figure)
