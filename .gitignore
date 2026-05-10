@@ -6,3 +6,5 @@ __pycache__/
 gallery_feedback.jsonl
 gallery_lite.html
 .local/
+
+.mem

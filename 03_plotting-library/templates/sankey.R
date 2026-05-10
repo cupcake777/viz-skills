@@ -1,0 +1,6 @@
+source(file.path(dirname(normalizePath(sub("^--file=", "", commandArgs(FALSE)[grepl("^--file=", commandArgs(FALSE))][1]))), "base_plot.R"))
+suppressPackageStartupMessages(library(ggplot2))
+
+generate_mock_data <- function(seed=42){set.seed(seed); expand.grid(source=c("Short","Stable","Long"),target=c("Short","Stable","Long")) |> transform(count=sample(10:90,9))}
+sankey_plot <- function(df,source_col="source",target_col="target",count_col="count",base_size=16){df$flow<-seq_len(nrow(df)); left<-data.frame(x=1,node=df[[source_col]],flow=df$flow,count=df[[count_col]]); right<-data.frame(x=2,node=df[[target_col]],flow=df$flow,count=df[[count_col]]); dd<-rbind(left,right); ggplot(dd,aes(x,node,group=flow))+geom_line(aes(linewidth=count,colour=node),alpha=.32,lineend="round")+geom_point(size=4,colour="white")+geom_text(aes(label=node),size=base_size/ggplot2::.pt)+scale_x_continuous(breaks=c(1,2),labels=c("Condition A","Condition B"),limits=c(.75,2.25))+scale_linewidth(range=c(.4,5),guide="none")+scale_colour_manual(values=NATURE_COLORS,guide="none")+labs(x=NULL,y=NULL)+theme_void(base_size=base_size)}
+if(sys.nframe()==0) save_demo(sankey_plot(generate_mock_data()),"sankey_demo",width=100,height=70)

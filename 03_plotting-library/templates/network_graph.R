@@ -1,0 +1,6 @@
+source(file.path(dirname(normalizePath(sub("^--file=", "", commandArgs(FALSE)[grepl("^--file=", commandArgs(FALSE))][1]))), "base_plot.R"))
+suppressPackageStartupMessages({library(ggplot2); library(igraph)})
+
+generate_mock_data <- function(seed=42){set.seed(seed); nodes<-paste0("G",1:18); data.frame(source=sample(nodes,36,TRUE),target=sample(nodes,36,TRUE),weight=runif(36,.2,1)) |> subset(source!=target)}
+network_graph_plot <- function(df,source_col="source",target_col="target",weight_col="weight",base_size=16){g<-graph_from_data_frame(df[,c(source_col,target_col,weight_col)],directed=FALSE); xy<-layout_with_fr(g); nd<-data.frame(name=V(g)$name,x=xy[,1],y=xy[,2]); ed<-as_data_frame(g); ed<-merge(ed,nd,by.x="from",by.y="name"); ed<-merge(ed,nd,by.x="to",by.y="name",suffixes=c("","end")); ggplot()+geom_segment(data=ed,aes(x=x,y=y,xend=xend,yend=yend,linewidth=weight),colour="grey70",alpha=.7)+geom_point(data=nd,aes(x,y),size=2,colour="#3C5488")+geom_text(data=nd,aes(x,y,label=name),size=base_size/ggplot2::.pt,nudge_y=.08)+scale_linewidth(range=c(.2,1),guide="none")+theme_void(base_size=base_size)}
+if(sys.nframe()==0) save_demo(network_graph_plot(generate_mock_data()),"network_graph_demo")
