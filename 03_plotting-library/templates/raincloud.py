@@ -280,7 +280,7 @@ if __name__ == "__main__":
     sys.path.insert(0, str(Path(__file__).parent))
     load_sci_style("gallery")
     df = generate_mock_data()
-    ax = plot(df, preset="gallery")
+    ax = plot(df, preset="gallery", orientation="horizontal")
     name = Path(__file__).stem.replace("_plot", "").replace("_curve", "").replace("_clustered", "")
     save_fig(ax.figure, name, dpi=180, fmt="both")
     plt.close(ax.figure)
