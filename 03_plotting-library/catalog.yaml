@@ -866,6 +866,135 @@ templates:
   default_palette: okabe_ito
   best_for: Trend with uncertainty band, CI/SD ribbon, multi-group trajectories
   not_for: Categorical comparison without ordering, single point per group
+- id: trajectory
+  tier: P1
+  status: done
+  title: Trajectory plot with directional arrows
+  template: templates/trajectory.py
+  demo_png: demo_fig/trajectory_demo.png
+  input_shape: embedding_table
+  required_fields:
+  - x
+  - y
+  optional_fields:
+  - pseudotime
+  - branch
+  - is_background
+  visual_encodings:
+    x: embedding_1
+    y: embedding_2
+    color: pseudotime_continuous
+    arrows: directional_flow
+  reusable_for:
+  - cell_differentiation_trajectory
+  - pseudotime_visualization
+  - developmental_arrows
+  default_palette: viridis
+  best_for: Cell fate trajectories on UMAP/tSNE embeddings with directional arrows
+  not_for: Static clustering without direction, non-embedding data
+  paper_source: "Setty et al., Nature Biotechnology 2019 (Palantir)"
+- id: dot_matrix
+  tier: P1
+  status: done
+  title: Dot matrix plot (size + color)
+  template: templates/dot_matrix.py
+  demo_png: demo_fig/dot_matrix_demo.png
+  input_shape: feature_group_summary
+  required_fields:
+  - row_id
+  - col_id
+  - size_value
+  - fill_value
+  optional_fields:
+  - row_group
+  visual_encodings:
+    x: column_category
+    y: row_category
+    size: magnitude_score
+    fill: value_score
+  reusable_for:
+  - two_metric_matrix_summary
+  - benchmark_comparison
+  - marker_gene_by_sample
+  default_palette: RdYlBu
+  best_for: Methods × metrics benchmark, gene × sample dot summary with dual encoding
+  not_for: Single continuous variable, pairwise correlation
+  paper_source: "Luecken et al., Nature Methods 2022 (scib benchmark)"
+- id: knee_plot
+  tier: P1
+  status: done
+  title: Knee plot (ranked abundance)
+  template: templates/knee_plot.py
+  demo_png: demo_fig/knee_plot_demo.png
+  input_shape: ranked_abundance
+  required_fields:
+  - barcode_id
+  - umi_count
+  optional_fields:
+  - is_cell
+  - cell_prob
+  visual_encodings:
+    x: barcode_rank
+    y: umi_count
+    color: cell_vs_empty
+    annotation: inflection_point
+  reusable_for:
+  - cell_filtering
+  - barcode_rank_qc
+  - droplet_abundance
+  default_palette: two_group
+  best_for: Single-cell UMI knee plot, barcode filtering, inflection detection
+  not_for: Non-ranked data, categorical comparisons
+  paper_source: "Fleming et al., Nature Methods 2023 (CellBender)"
+- id: gene_trend_heatmap
+  tier: P1
+  status: done
+  title: Gene trend heatmap over pseudotime
+  template: templates/gene_trend_heatmap.py
+  demo_png: demo_fig/gene_trend_heatmap_demo.png
+  input_shape: gene_by_pseudotime
+  required_fields:
+  - gene
+  - bin
+  - value
+  optional_fields:
+  - branch
+  visual_encodings:
+    x: pseudotime_bin
+    y: gene
+    fill: z_score_expression
+  reusable_for:
+  - gene_dynamics_over_continuous_axis
+  - pseudotime_expression_heatmap
+  - dose_response_heatmap
+  default_palette: RdBu
+  best_for: Gene expression dynamics along pseudotime, sorted by peak activation
+  not_for: Sample-by-sample clustering, categorical x-axis
+  paper_source: "Setty et al., Nature Biotechnology 2019 (Palantir)"
+- id: density_scatter
+  tier: P1
+  status: done
+  title: Density scatter plot
+  template: templates/density_scatter.py
+  demo_png: demo_fig/density_scatter_demo.png
+  input_shape: point_table
+  required_fields:
+  - x
+  - y
+  optional_fields:
+  - group
+  visual_encodings:
+    x: x
+    y: y
+    color: density_or_group
+  reusable_for:
+  - large_dataset_scatter
+  - overplotting_solutions
+  - embedding_density
+  default_palette: viridis
+  best_for: Large scatter plots (>5K points) with density coloring to reduce overplotting
+  not_for: Small datasets (<500 points), categorical comparisons
+  paper_source: "McInnes et al., 2018 (UMAP paper)"
 planned_templates:
 - id: annotated_heatmap
   tier: P0
@@ -903,11 +1032,6 @@ planned_templates:
   input_shape: paired_item_values
   reusable_for:
   - two_condition_change
-- id: dot_matrix
-  tier: P1
-  input_shape: feature_group_summary
-  reusable_for:
-  - two_metric_matrix_summary
 - id: regional_association
   tier: P1
   input_shape: regional_association_table

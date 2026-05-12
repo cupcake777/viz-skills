@@ -45,8 +45,8 @@ preset_spec <- function(preset = "publication") {
 theme_sci <- function(base_size = 16, base_family = "Arial", grid = FALSE) {
   th <- theme_classic(base_size = base_size, base_family = base_family) +
     theme(
-      axis.line = element_line(linewidth = 0.35, colour = "grey25"),
-      axis.ticks = element_line(linewidth = 0.3, colour = "grey25"),
+      axis.line = element_line(size = 0.35, colour = "grey25"),
+      axis.ticks = element_line(size = 0.3, colour = "grey25"),
       axis.text = element_text(colour = "grey25"),
       legend.title = element_blank(),
       legend.key.height = unit(8, "pt"),
@@ -58,7 +58,7 @@ theme_sci <- function(base_size = 16, base_family = "Arial", grid = FALSE) {
 
   if (grid) {
     th <- th + theme(
-      panel.grid.major = element_line(colour = "grey90", linewidth = 0.25),
+      panel.grid.major = element_line(colour = "grey90", size = 0.25),
       panel.grid.minor = element_blank()
     )
   }

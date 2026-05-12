@@ -41,7 +41,7 @@ Before choosing colors, read `02_sci-fig/SKILL.md` sections "Step 1.5: Semantic 
 Critical rules:
 - Semantic colors are locked per role: blue=proposed/baseline, green=positive/gain, red=negative/loss, gray=NS. **Never remap these across charts in the same project.**
 - Use `get_palette("okabe_ito")` as default categorical palette (CVD-safe). Override with journal palettes (npg, nejm, lancet) only when the target journal requires it.
-- Genomics-specific palettes: `volcano_up_down_ns` for volcano, `apa_pattern` for APA studies, `gwas_significance` for Manhattan plots.
+- Genomics-specific palettes: `volcano_up_down_ns` for volcano, `gwas_significance` for Manhattan plots.
 - **Never use rainbow/jet colormaps.** Use viridis (sequential) or roma/vik (diverging, CVD-safe).
 
 ## What NOT to Do
@@ -77,7 +77,7 @@ use_pal("okabe_ito")  # default
 ```
 
 ```r
-# Project-locked lifespan APA colors
-project_colors <- c(Fetal="#4DBBD5", Neonatal="#00A087", Child="#3C5488",
-                    Adolescent="#F39B7F", Adult="#E64B35", Aged="#8491B4")
+# Project-locked colors example (define per project)
+# project_colors <- c(Group1="#4DBBD5", Group2="#00A087", Group3="#3C5488",
+#                     Group4="#F39B7F", Group5="#E64B35", Group6="#8491B4")
 ```
