@@ -175,34 +175,29 @@ classification_basis:
 bioinformatics_coverage:
   covered_core:
   - 'Differential or association summary: volcano, Manhattan, forest.'
-  - 'Matrix and clustering: clustered heatmap, correlation heatmap, sparse event matrix.'
+  - 'Matrix and clustering: clustered heatmap, correlation heatmap, sparse event matrix, annotated heatmap.'
   - 'Grouped distributions: box/violin, raincloud, ridgeline.'
+  - 'Composition: stacked bar, ternary plot, stacked area.'
   - 'Density and histogram overlays: histogram + KDE for distribution inspection.'
   - 'Functional summaries: enrichment bubble and term-feature circos.'
-  - 'Embeddings and relationships: PCA, UMAP, network, Sankey, UpSet.'
-  - 'Outcome summaries: ROC and Kaplan-Meier.'
+  - 'Embeddings and relationships: PCA, UMAP, network, Sankey, UpSet, feature plot.'
   important_missing:
-    P0:
-    - id: scatter
-      reason: Basic relationship plot is required across almost every analysis.
-    - id: annotated_heatmap
-      reason: The current heatmap entry does not fully cover reusable row/column annotations.
     P1:
     - id: ma_plot
       reason: Complements volcano for mean-dependent bias and differential abundance.
-    - id: qq_plot
-      reason: Essential QC for p-value distributions in genome-wide or high-throughput
-        tests.
     - id: regional_association
       reason: Genome-wide Manhattan is not enough for locus-level interpretation.
-    - id: stacked_bar
-      reason: Composition summaries are common in microbiome, cell fraction, and category
-        mix analyses.
-    - id: dot_matrix
-      reason: Reusable two-metric feature-by-group summaries cover marker and pathway
-        displays.
     - id: precision_recall_curve
       reason: ROC is insufficient for imbalanced classification problems.
+    - id: phylogenetic_tree
+      reason: Evolutionary relationships and taxonomic clustering are common in microbiome
+        and comparative genomics.
+    - id: rarefaction_curve
+      reason: Essential QC for species richness and sampling completeness in diversity
+        studies.
+    - id: bee_swarm
+      reason: Compact distribution display for many groups, bridges box-violin and dot
+        plots.
     P2:
     - id: genomic_segments
       reason: Needed for gene models, interval annotations, and assay tracks.
@@ -995,12 +990,113 @@ templates:
   best_for: Large scatter plots (>5K points) with density coloring to reduce overplotting
   not_for: Small datasets (<500 points), categorical comparisons
   paper_source: "McInnes et al., 2018 (UMAP paper)"
-planned_templates:
+- id: feature_plot
+  tier: P0
+  status: done
+  title: Feature plot (gene expression on embedding)
+  template: templates/feature_plot.R
+  demo_png: demo_fig/feature_plot_demo.png
+  input_shape: embedding_with_expression
+  required_fields:
+  - dim1
+  - dim2
+  - expression
+  optional_fields:
+  - group_label
+  - cell_id
+  visual_encodings:
+    x: dim1
+    y: dim2
+    color: expression_intensity
+    facet: group_or_cluster
+  reusable_for:
+  - gene_expression_on_embedding
+  - single_cell_feature_overlay
+  - spatial_expression_pattern
+  default_palette: viridis
+  best_for: Overlaying continuous gene expression on UMAP/tSNE, single-cell feature plots
+  not_for: Static bar charts, non-embedding coordinate data
+- id: stacked_bar
+  tier: P0
+  status: done
+  title: Compositional stacked bar chart
+  template: templates/stacked_bar.R
+  demo_png: demo_fig/stacked_bar_demo.png
+  input_shape: composition_table
+  required_fields:
+  - category
+  - component
+  - value
+  optional_fields:
+  - group
+  visual_encodings:
+    x: category
+    y: value_or_proportion
+    fill: component
+    mode: fill_or_stack
+  reusable_for:
+  - component_fraction_by_group
+  - species_composition
+  - category_proportion_comparison
+  default_palette: npg
+  best_for: Microbiome composition, cell type fractions, categorical proportion changes
+  not_for: Continuous measurement without composition, single time point with 2 groups
 - id: annotated_heatmap
   tier: P0
+  status: done
+  title: Annotated clustered heatmap
+  template: templates/annotated_heatmap.R
+  demo_png: demo_fig/annotated_heatmap_demo.png
   input_shape: matrix_with_metadata
+  required_fields:
+  - row_id
+  - column_id
+  - value
+  optional_fields:
+  - row_group
+  - column_group
+  - row_annotation
+  - column_annotation
+  visual_encodings:
+    x: column_id
+    y: row_id
+    fill: value
+    annotation_bars: row_and_column_metadata
   reusable_for:
   - matrix_pattern_with_row_column_annotations
+  - expression_matrix_with_pathway_annotation
+  - sample_clustering_with_condition_labels
+  default_palette: npg
+  best_for: Clustered heatmaps with categorical row/column annotation bars, pathway membership
+  not_for: Correlation matrices, single-group summaries without annotations
+- id: ternary_plot
+  tier: P0
+  status: done
+  title: Ternary composition plot
+  template: templates/ternary_plot.R
+  demo_png: demo_fig/ternary_plot_demo.png
+  input_shape: three_component_composition
+  required_fields:
+  - component_1
+  - component_2
+  - component_3
+  optional_fields:
+  - group
+  - label
+  visual_encodings:
+    x: component_1_proportion
+    y: component_2_proportion
+    z: component_3_proportion
+    color: group_or_cluster
+    label: selected_points
+  reusable_for:
+  - three_component_composition
+  - compositional_triangular_data
+  - phase_diagram_visualization
+  default_palette: npg
+  best_for: Three-component compositional data (soil, microbiome, RNA isoform proportions)
+  not_for: Two-component data, non-compositional comparisons
+planned_templates:
 - id: paired_scatter
   tier: P1
   input_shape: paired_feature_values
@@ -1022,11 +1118,6 @@ planned_templates:
   input_shape: mean_difference_table
   reusable_for:
   - intensity_dependent_difference
-- id: stacked_bar
-  tier: P1
-  input_shape: composition_table
-  reusable_for:
-  - component_fraction_by_group
 - id: dumbbell_plot
   tier: P1
   input_shape: paired_item_values
@@ -1058,3 +1149,21 @@ planned_templates:
   input_shape: paired_interval_table
   reusable_for:
   - comparative_genomics_interval_links
+- id: phylogenetic_tree
+  tier: P1
+  input_shape: hierarchical_branching
+  reusable_for:
+  - evolutionary_relationships
+  - taxonomic_clustering
+- id: bee_swarm
+  tier: P1
+  input_shape: grouped_values
+  reusable_for:
+  - distribution_with_individual_points
+  - compact_dot_distribution
+- id: rarefaction_curve
+  tier: P1
+  input_shape: accumulation_table
+  reusable_for:
+  - species_richness_accumulation
+  - diversity_saturation
