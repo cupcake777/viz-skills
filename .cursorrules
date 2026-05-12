@@ -1,0 +1,31 @@
+# viz-skills: Scientific Figure & Plotting Rules
+
+## Entry Point
+- Chart lookup: `03_plotting-library/catalog.yaml` (search by id, claim_types, or input_shape)
+- Decision tree & color rules: `02_sci-fig/SKILL.md`
+- Template execution: `03_plotting-library/SKILL.md`
+
+## Must-Follow Rules
+1. R-first for static figures. Python only for interactive/HTML or when no R template exists.
+2. Source house style: `style/base_plot.R` (R) or `style/matplotlibrc` (Python). Never set fonts/colors from scratch.
+3. Dual output: PDF + PNG always. No titles inside figures. No panel labels in code.
+4. Semantic colors are locked: blue=proposed, green=positive, red=negative, gray=NS. Never remap per-chart.
+5. Default palette: Okabe-Ito (CVD-safe). Journal palettes (npg, nejm, lancet) only when target requires.
+6. Genomics palettes: volcano_up_down_ns, apa_pattern, gwas_significance — not arbitrary hex.
+7. No rainbow/jet. Use viridis (seq) or roma/vik (div).
+8. No bar+error bar for continuous data. No >3-set Venn. No >5-class pie charts.
+
+## Chart Selection ( abbreviated)
+| Claim | Chart | Template |
+|-------|-------|----------|
+| Distribution | violin/raincloud/ridgeline | box_violin.R, raincloud.R, ridgeline.R |
+| Comparison | grouped_bar/forest_plot | grouped_bar.R, forest_plot.R |
+| Differential | volcano | volcano.R |
+| Genomic position | manhattan/lollipop | manhattan.R, lollipop.R |
+| Matrix pattern | heatmap/oncoplot | heatmap_clustered.R, oncoplot.R |
+| Enrichment | bubble/circos | enrichment_bubble.R, enrichment_circos.R |
+| Overlap | upset | upset_plot.R |
+| Embedding | PCA/UMAP | pca_plot.R, umap_plot.R |
+| Survival | KM curve | km_survival.R |
+
+Full list: 25 done templates, see catalog.yaml.
