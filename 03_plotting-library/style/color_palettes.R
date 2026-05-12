@@ -297,3 +297,4 @@ project_colors <- function(project = "lifespan_apa") {
 #' Check if a palette is CVD-safe
 is_cvd_safe <- function(name) {
   name %in% .CVD_SAFE
+}

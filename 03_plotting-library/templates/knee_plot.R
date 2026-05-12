@@ -68,14 +68,23 @@ plot_knee <- function(df,
   df <- df[order(df[[count]], decreasing = TRUE), ]
   df[[rank]] <- seq_len(nrow(df))
 
-  p <- ggplot(df, aes(x = .data[[rank]], y = .data[[count]])) +
-    geom_point(aes(color = if (!is.null(is_cell) && is_cell %in% names(df)) .data[[is_cell]] else NULL),
-               size = 0.5, alpha = 0.6, shape = 16) +
+  # Build aes conditionally (ggplot2 3.5+ forbids if() inside aes)
+  point_aes <- aes(x = .data[[rank]], y = .data[[count]])
+  has_is_cell <- !is.null(is_cell) && is_cell %in% names(df) && is.character(is_cell) && length(is_cell) == 1
+  if (has_is_cell) {
+    point_aes <- aes(x = .data[[rank]], y = .data[[count]], color = .data[[is_cell]])
+  }
+
+  p <- ggplot(df, point_aes) +
+    geom_point(size = 0.5, alpha = 0.6, shape = 16) +
     scale_x_log10(labels = scales::comma) +
     scale_y_log10(labels = scales::comma) +
-    scale_color_manual(values = c("TRUE" = "#E64B35", "FALSE" = "#CFD5E2"),
-                       name = "Cell", labels = c("Empty", "Cell")) +
-    annotation_logticks(sides = "bl", size = 0.2) +
+    annotation_logticks(sides = "bl", linewidth = 0.2)
+
+  if (has_is_cell) {
+    p <- p + scale_color_manual(values = c("TRUE" = "#E64B35", "FALSE" = "#CFD5E2"),
+                                 name = "Cell", labels = c("Empty", "Cell"))
+  } +
     theme_sci(base_size = base_size) +
     theme(
       legend.position = "top",
@@ -90,7 +99,7 @@ plot_knee <- function(df,
     knee_idx <- find_knee(log_c, log_r)
     if (knee_idx > 0 && knee_idx <= nrow(df)) {
       p <- p + annotate("vline", xintercept = df[[rank]][knee_idx],
-                        linetype = "dashed", color = "#3C5488", size = 0.5) +
+                        linetype = "dashed", color = "#3C5488", linewidth = 0.5) +
         annotate("label",
                  x = df[[rank]][knee_idx] * 2,
                  y = df[[count]][1] * 0.3,
