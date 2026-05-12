@@ -1,539 +1,936 @@
 schema_version: 3
-purpose: "Reusable plotting template catalog for scientific figures."
-
+purpose: Reusable plotting template catalog for scientific figures.
 catalog_rules:
-  - "Describe visual patterns, not project-specific topics."
-  - "Keep template names generic and stable."
-  - "Use examples only to clarify reuse, never to define a one-off figure."
-  - "A chart marked `done` must point to an existing runnable template."
-  - "A template should expose column mappings and style parameters in code."
-
+- Describe visual patterns, not project-specific topics.
+- Keep template names generic and stable.
+- Use examples only to clarify reuse, never to define a one-off figure.
+- A chart marked `done` must point to an existing runnable template.
+- A template should expose column mappings and style parameters in code.
 status:
-  done: "Runnable R template exists in templates/."
-  planned: "Reusable pattern worth adding later; no template is promised."
-
+  done: Runnable R template exists in templates/.
+  planned: Reusable pattern worth adding later; no template is promised.
 tiers:
-  P0: "Core template used across many projects."
-  P1: "Common specialized template with broad reuse."
-  P2: "Niche template; add only when it can stay generic."
-
+  P0: Core template used across many projects.
+  P1: Common specialized template with broad reuse.
+  P2: Niche template; add only when it can stay generic.
 classification_basis:
-  primary_axis: "Analytical claim: what question the figure answers."
-  secondary_axis: "Data shape: how the input table or matrix is structured."
-  tertiary_axis: "Visual grammar: which reusable chart family encodes the claim."
+  primary_axis: 'Analytical claim: what question the figure answers.'
+  secondary_axis: 'Data shape: how the input table or matrix is structured.'
+  tertiary_axis: 'Visual grammar: which reusable chart family encodes the claim.'
   claim_types:
     distribution:
-      question: "How are numeric values distributed across samples or groups?"
-      data_shapes: [numeric_vector, grouped_values]
-      templates: [box_violin, raincloud, ridgeline]
-      gaps: [histogram_density, ecdf_plot]
+      question: How are numeric values distributed across samples or groups?
+      data_shapes:
+      - numeric_vector
+      - grouped_values
+      templates:
+      - box_violin
+      - raincloud
+      - ridgeline
+      gaps:
+      - ecdf_plot
     comparison:
-      question: "How do groups differ in summary values, paired values, or uncertainty intervals?"
-      data_shapes: [grouped_values, grouped_summary, estimate_interval]
-      templates: [box_violin, raincloud, grouped_bar, forest_plot]
-      gaps: [paired_line, dumbbell_plot]
+      question: How do groups differ in summary values, paired values, or uncertainty
+        intervals?
+      data_shapes:
+      - grouped_values
+      - grouped_summary
+      - estimate_interval
+      templates:
+      - box_violin
+      - raincloud
+      - grouped_bar
+      - forest_plot
+      gaps:
+      - paired_line
+      - dumbbell_plot
     trend:
-      question: "How does a value change across ordered time, stage, dose, or rank?"
-      data_shapes: [ordered_series, grouped_ordered_series]
-      templates: []
-      gaps: [line_ribbon, trajectory_heatmap, stacked_area]
+      question: How does a value change across ordered time, stage, dose, or rank?
+      data_shapes:
+      - ordered_series
+      - grouped_ordered_series
+      templates:
+      - stacked_area
+      - line_ribbon
+      gaps:
+      - trajectory_heatmap
     relationship:
-      question: "How are two or more quantitative variables related?"
-      data_shapes: [point_table, pairwise_matrix]
-      templates: [correlation_heatmap]
-      gaps: [scatter, hexbin, density_scatter, bland_altman]
+      question: How are two or more quantitative variables related?
+      data_shapes:
+      - point_table
+      - pairwise_matrix
+      templates:
+      - correlation_heatmap
+      - scatter
+      gaps:
+      - hexbin
+      - density_scatter
+      - bland_altman
     differential_signal:
-      question: "Which features have both large effect size and statistical evidence?"
-      data_shapes: [point_table, mean_difference_table]
-      templates: [volcano]
-      gaps: [ma_plot, rank_metric_plot]
+      question: Which features have both large effect size and statistical evidence?
+      data_shapes:
+      - point_table
+      - mean_difference_table
+      templates:
+      - volcano
+      gaps:
+      - ma_plot
+      - rank_metric_plot
     genomic_position:
-      question: "Where do signals or annotations occur along genomic coordinates?"
-      data_shapes: [ordered_position_table, interval_table, regional_association_table]
-      templates: [manhattan, lollipop]
-      gaps: [regional_association, qq_plot, genomic_segments, chromosome_ideogram]
+      question: Where do signals or annotations occur along genomic coordinates?
+      data_shapes:
+      - ordered_position_table
+      - interval_table
+      - regional_association_table
+      templates:
+      - manhattan
+      - lollipop
+      gaps:
+      - regional_association
+      - qq_plot
+      - genomic_segments
+      - chromosome_ideogram
     matrix_pattern:
-      question: "What row-by-column pattern exists across features, samples, or variables?"
-      data_shapes: [matrix, pairwise_matrix, sparse_event_matrix]
-      templates: [heatmap_clustered, correlation_heatmap, oncoplot]
-      gaps: [annotated_heatmap, dot_matrix]
+      question: What row-by-column pattern exists across features, samples, or variables?
+      data_shapes:
+      - matrix
+      - pairwise_matrix
+      - sparse_event_matrix
+      templates:
+      - heatmap_clustered
+      - correlation_heatmap
+      - oncoplot
+      gaps:
+      - annotated_heatmap
+      - dot_matrix
     enrichment:
-      question: "Which categories or terms are over-represented or ranked as important?"
-      data_shapes: [ranked_term_table, bipartite_links, ranked_curve_table]
-      templates: [enrichment_bubble, enrichment_circos]
-      gaps: [gsea_curve, enrichment_bar, term_gene_heatmap]
+      question: Which categories or terms are over-represented or ranked as important?
+      data_shapes:
+      - ranked_term_table
+      - bipartite_links
+      - ranked_curve_table
+      templates:
+      - enrichment_bubble
+      - enrichment_circos
+      gaps:
+      - gsea_curve
+      - enrichment_bar
+      - term_gene_heatmap
     overlap:
-      question: "How do feature sets intersect?"
-      data_shapes: [set_membership]
-      templates: [upset_plot]
-      gaps: [venn_small_sets]
+      question: How do feature sets intersect?
+      data_shapes:
+      - set_membership
+      templates:
+      - upset_plot
+      gaps:
+      - venn_small_sets
     composition:
-      question: "What fractions or counts make up each sample, group, or ordered point?"
-      data_shapes: [composition_table, ordered_composition_table]
-      templates: []
-      gaps: [stacked_bar, stacked_area, waffle_plot]
+      question: What fractions or counts make up each sample, group, or ordered point?
+      data_shapes:
+      - composition_table
+      - ordered_composition_table
+      templates:
+      - stacked_area
+      gaps:
+      - stacked_bar
+      - waffle_plot
     embedding:
-      question: "How do samples or cells separate in low-dimensional space?"
-      data_shapes: [embedding_table]
-      templates: [pca_plot, umap_plot]
-      gaps: [tsne_plot, embedding_density, cluster_label_map]
+      question: How do samples or cells separate in low-dimensional space?
+      data_shapes:
+      - embedding_table
+      templates:
+      - pca_plot
+      - umap_plot
+      gaps:
+      - tsne_plot
+      - embedding_density
+      - cluster_label_map
     flow_network:
-      question: "How are entities connected or how do categories move between states?"
-      data_shapes: [edge_table, flow_table, multi_stage_flow, weighted_pair_links]
-      templates: [network_graph, sankey]
-      gaps: [alluvial_plot, chord_plot]
+      question: How are entities connected or how do categories move between states?
+      data_shapes:
+      - edge_table
+      - flow_table
+      - multi_stage_flow
+      - weighted_pair_links
+      templates:
+      - network_graph
+      - sankey
+      gaps:
+      - alluvial_plot
+      - chord_plot
     model_performance:
-      question: "How well does a model predict or stratify outcomes?"
-      data_shapes: [classifier_curve, time_to_event, calibration_table]
-      templates: [roc_curve, km_survival, forest_plot]
-      gaps: [precision_recall_curve, calibration_curve, decision_curve]
-
+      question: How well does a model predict or stratify outcomes?
+      data_shapes:
+      - classifier_curve
+      - time_to_event
+      - calibration_table
+      templates:
+      - roc_curve
+      - km_survival
+      - forest_plot
+      gaps:
+      - precision_recall_curve
+      - calibration_curve
+      - decision_curve
 bioinformatics_coverage:
   covered_core:
-    - "Differential or association summary: volcano, Manhattan, forest."
-    - "Matrix and clustering: clustered heatmap, correlation heatmap, sparse event matrix."
-    - "Grouped distributions: box/violin, raincloud, ridgeline."
-    - "Functional summaries: enrichment bubble and term-feature circos."
-    - "Embeddings and relationships: PCA, UMAP, network, Sankey, UpSet."
-    - "Outcome summaries: ROC and Kaplan-Meier."
+  - 'Differential or association summary: volcano, Manhattan, forest.'
+  - 'Matrix and clustering: clustered heatmap, correlation heatmap, sparse event matrix.'
+  - 'Grouped distributions: box/violin, raincloud, ridgeline.'
+  - 'Density and histogram overlays: histogram + KDE for distribution inspection.'
+  - 'Functional summaries: enrichment bubble and term-feature circos.'
+  - 'Embeddings and relationships: PCA, UMAP, network, Sankey, UpSet.'
+  - 'Outcome summaries: ROC and Kaplan-Meier.'
   important_missing:
     P0:
-      - id: scatter
-        reason: "Basic relationship plot is required across almost every analysis."
-      - id: histogram_density
-        reason: "QC and distribution inspection need a simple one-variable template."
-      - id: line_ribbon
-        reason: "Ordered trends with confidence intervals are common in longitudinal and dose-response data."
-      - id: annotated_heatmap
-        reason: "The current heatmap entry does not fully cover reusable row/column annotations."
+    - id: scatter
+      reason: Basic relationship plot is required across almost every analysis.
+    - id: annotated_heatmap
+      reason: The current heatmap entry does not fully cover reusable row/column annotations.
     P1:
-      - id: ma_plot
-        reason: "Complements volcano for mean-dependent bias and differential abundance."
-      - id: qq_plot
-        reason: "Essential QC for p-value distributions in genome-wide or high-throughput tests."
-      - id: regional_association
-        reason: "Genome-wide Manhattan is not enough for locus-level interpretation."
-      - id: stacked_bar
-        reason: "Composition summaries are common in microbiome, cell fraction, and category mix analyses."
-      - id: dot_matrix
-        reason: "Reusable two-metric feature-by-group summaries cover marker and pathway displays."
-      - id: precision_recall_curve
-        reason: "ROC is insufficient for imbalanced classification problems."
+    - id: ma_plot
+      reason: Complements volcano for mean-dependent bias and differential abundance.
+    - id: qq_plot
+      reason: Essential QC for p-value distributions in genome-wide or high-throughput
+        tests.
+    - id: regional_association
+      reason: Genome-wide Manhattan is not enough for locus-level interpretation.
+    - id: stacked_bar
+      reason: Composition summaries are common in microbiome, cell fraction, and category
+        mix analyses.
+    - id: dot_matrix
+      reason: Reusable two-metric feature-by-group summaries cover marker and pathway
+        displays.
+    - id: precision_recall_curve
+      reason: ROC is insufficient for imbalanced classification problems.
     P2:
-      - id: genomic_segments
-        reason: "Needed for gene models, interval annotations, and assay tracks."
-      - id: circos_plot
-        reason: "Useful for multi-track genome summaries, but should remain niche."
-      - id: synteny_links
-        reason: "Comparative genomics needs paired interval links."
-
+    - id: genomic_segments
+      reason: Needed for gene models, interval annotations, and assay tracks.
+    - id: circos_plot
+      reason: Useful for multi-track genome summaries, but should remain niche.
+    - id: synteny_links
+      reason: Comparative genomics needs paired interval links.
 development_workflow:
   add_template_steps:
-    - "Define the analytical claim and input shape before choosing a chart."
-    - "Check whether an existing template can cover the claim through column mappings."
-    - "If not covered, add a generic planned entry before writing code."
-    - "Implement the smallest reusable R template with mock data and explicit parameters."
-    - "Render demo PDF and PNG."
-    - "Promote to `templates` only after template path and demo path both exist."
+  - Define the analytical claim and input shape before choosing a chart.
+  - Check whether an existing template can cover the claim through column mappings.
+  - If not covered, add a generic planned entry before writing code.
+  - Implement the smallest reusable R template with mock data and explicit parameters.
+  - Render demo PDF and PNG.
+  - Promote to `templates` only after template path and demo path both exist.
   promotion_checks:
-    - "Template name is generic, not disease-, tissue-, assay-, or project-specific."
-    - "Required fields describe roles such as `value`, `group`, `position`, not one dataset's column names."
-    - "The plot can be reused by at least three plausible bioinformatics analyses."
-    - "Style is controlled by base plotting utilities instead of local ad hoc settings."
-    - "Demo data exercises labels, groups, missing optional fields, and export settings."
-
+  - Template name is generic, not disease-, tissue-, assay-, or project-specific.
+  - Required fields describe roles such as `value`, `group`, `position`, not one dataset's
+    column names.
+  - The plot can be reused by at least three plausible bioinformatics analyses.
+  - Style is controlled by base plotting utilities instead of local ad hoc settings.
+  - Demo data exercises labels, groups, missing optional fields, and export settings.
 templates:
-  - id: volcano
-    tier: P0
-    status: done
-    title: "Volcano plot"
-    template: "templates/volcano.R"
-    demo_png: "demo_fig/volcano_demo.png"
-    input_shape: point_table
-    required_fields: [effect, p_value]
-    optional_fields: [label, group, q_value]
-    visual_encodings:
-      x: effect
-      y: "-log10(p_value)"
-      color: significance_or_group
-      label: selected_points
-    reusable_for: [feature_screen, association_scan, differential_test]
-
-  - id: manhattan
-    tier: P0
-    status: done
-    title: "Manhattan plot"
-    template: "templates/manhattan.R"
-    demo_png: "demo_fig/manhattan_demo.png"
-    input_shape: ordered_position_table
-    required_fields: [block, position, p_value]
-    optional_fields: [label, group]
-    visual_encodings:
-      x: cumulative_position
-      y: "-log10(p_value)"
-      color: block
-      label: selected_points
-    reusable_for: [genome_scan, ordered_feature_scan]
-
-  - id: heatmap_clustered
-    tier: P0
-    status: done
-    title: "Clustered heatmap"
-    template: "templates/heatmap_clustered.R"
-    demo_png: "demo_fig/heatmap_demo.png"
-    input_shape: matrix
-    required_fields: [row_id, column_id, value]
-    optional_fields: [row_group, column_group]
-    visual_encodings:
-      x: column_id
-      y: row_id
-      fill: value
-      annotations: row_or_column_metadata
-    reusable_for: [matrix_pattern, sample_clustering, score_matrix]
-
-  - id: correlation_heatmap
-    tier: P0
-    status: done
-    title: "Correlation heatmap"
-    template: "templates/correlation_heatmap.R"
-    demo_png: "demo_fig/correlation_heatmap_demo.png"
-    input_shape: pairwise_matrix
-    required_fields: [variable_1, variable_2, value]
-    optional_fields: [p_value, label]
-    visual_encodings:
-      x: variable_1
-      y: variable_2
-      fill: correlation_or_similarity
-      label: optional_value_text
-    reusable_for: [correlation_matrix, similarity_matrix, distance_summary]
-
-  - id: box_violin
-    tier: P0
-    status: done
-    title: "Box and violin plot"
-    template: "templates/box_violin.R"
-    demo_png: "demo_fig/box_violin_demo.png"
-    input_shape: grouped_values
-    required_fields: [group, value]
-    optional_fields: [sample_id, facet, color_group]
-    visual_encodings:
-      x: group
-      y: value
-      fill: group_or_condition
-      points: observations
-    reusable_for: [group_distribution, condition_comparison]
-
-  - id: raincloud
-    tier: P0
-    status: done
-    title: "Raincloud plot"
-    template: "templates/raincloud.R"
-    demo_png: "demo_fig/raincloud_demo.png"
-    input_shape: grouped_values
-    required_fields: [group, value]
-    optional_fields: [sample_id, paired_id, facet]
-    visual_encodings:
-      x: group
-      y: value
-      density: group_distribution
-      points: observations
-      interval: summary_distribution
-    reusable_for: [distribution_with_points, repeated_measure_summary]
-
-  - id: ridgeline
-    tier: P1
-    status: done
-    title: "Ridgeline plot"
-    template: "templates/ridgeline.R"
-    demo_png: "demo_fig/ridgeline_demo.png"
-    input_shape: grouped_values
-    required_fields: [group, value]
-    optional_fields: [facet, weight]
-    visual_encodings:
-      x: value
-      y: ordered_group
-      fill: group
-      density: distribution
-    reusable_for: [many_group_distribution, ordered_distribution_series]
-
-  - id: grouped_bar
-    tier: P0
-    status: done
-    title: "Grouped bar plot"
-    template: "templates/grouped_bar.R"
-    demo_png: "demo_fig/grouped_bar_demo.png"
-    input_shape: grouped_summary
-    required_fields: [category, group, value]
-    optional_fields: [error, label]
-    visual_encodings:
-      x: category
-      y: value
-      fill: group
-      interval: uncertainty
-    reusable_for: [summary_comparison, rate_comparison]
-
-  - id: enrichment_bubble
-    tier: P0
-    status: done
-    title: "Ranked term bubble plot"
-    template: "templates/enrichment_bubble.R"
-    demo_png: "demo_fig/enrichment_bubble_demo.png"
-    input_shape: ranked_term_table
-    required_fields: [term, score, p_value]
-    optional_fields: [count, group, q_value]
-    visual_encodings:
-      x: score_or_ratio
-      y: term
-      size: count
-      color: significance
-    reusable_for: [ranked_categories, term_summary, overrepresentation_result]
-
-  - id: enrichment_circos
-    tier: P1
-    status: done
-    title: "Term-feature circos plot"
-    template: "templates/enrichment_circos.R"
-    demo_png: "demo_fig/enrichment_circos_demo.png"
-    input_shape: bipartite_links
-    required_fields: [source, target, weight]
-    optional_fields: [source_group, target_group]
-    visual_encodings:
-      sectors: source_and_target_groups
-      links: weighted_membership
-      color: group
-    reusable_for: [feature_category_links, bipartite_relationships]
-
-  - id: forest_plot
-    tier: P0
-    status: done
-    title: "Forest plot"
-    template: "templates/forest_plot.R"
-    demo_png: "demo_fig/forest_plot_demo.png"
-    input_shape: estimate_interval
-    required_fields: [term, estimate, lower, upper]
-    optional_fields: [group, p_value, weight]
-    visual_encodings:
-      x: estimate
-      xmin: lower
-      xmax: upper
-      y: term
-      color: group
-    reusable_for: [model_summary, effect_estimates, meta_analysis]
-
-  - id: lollipop
-    tier: P0
-    status: done
-    title: "Lollipop plot"
-    template: "templates/lollipop.R"
-    demo_png: "demo_fig/lollipop_demo.png"
-    input_shape: positioned_events
-    required_fields: [position, value]
-    optional_fields: [label, event_type, interval_annotation]
-    visual_encodings:
-      x: position
-      y: value
-      stem: value_from_baseline
-      color: event_type
-      label: selected_events
-    reusable_for: [positioned_counts, ranked_events, sequence_events]
-
-  - id: pca_plot
-    tier: P0
-    status: done
-    title: "PCA scatter plot"
-    template: "templates/pca_plot.R"
-    demo_png: "demo_fig/pca_demo.png"
-    input_shape: embedding_table
-    required_fields: [component_1, component_2]
-    optional_fields: [group, label, shape_group]
-    visual_encodings:
-      x: component_1
-      y: component_2
-      color: group
-      shape: shape_group
-      label: selected_points
-    reusable_for: [linear_embedding, sample_qc, dimension_reduction]
-
-  - id: umap_plot
-    tier: P1
-    status: done
-    title: "UMAP scatter plot"
-    template: "templates/umap_plot.R"
-    demo_png: "demo_fig/umap_demo.png"
-    input_shape: embedding_table
-    required_fields: [embedding_1, embedding_2]
-    optional_fields: [group, label, facet]
-    visual_encodings:
-      x: embedding_1
-      y: embedding_2
-      color: group
-      label: cluster_or_point_label
-    reusable_for: [nonlinear_embedding, cluster_map, manifold_view]
-
-  - id: roc_curve
-    tier: P1
-    status: done
-    title: "ROC curve"
-    template: "templates/roc_curve.R"
-    demo_png: "demo_fig/roc_demo.png"
-    input_shape: classifier_curve
-    required_fields: [false_positive_rate, true_positive_rate]
-    optional_fields: [model, auc, threshold]
-    visual_encodings:
-      x: false_positive_rate
-      y: true_positive_rate
-      color: model
-      label: auc
-    reusable_for: [classifier_performance, model_comparison]
-
-  - id: km_survival
-    tier: P1
-    status: done
-    title: "Kaplan-Meier curve"
-    template: "templates/km_survival.R"
-    demo_png: "demo_fig/km_survival_demo.png"
-    input_shape: time_to_event
-    required_fields: [time, event]
-    optional_fields: [group, censor]
-    visual_encodings:
-      x: time
-      y: survival_probability
-      color: group
-      marks: censoring
-    reusable_for: [time_to_event_analysis, stratified_event_curve]
-
-  - id: sankey
-    tier: P1
-    status: done
-    title: "Sankey flow"
-    template: "templates/sankey.R"
-    demo_png: "demo_fig/sankey_demo.png"
-    input_shape: flow_table
-    required_fields: [source, target, weight]
-    optional_fields: [source_stage, target_stage, group]
-    visual_encodings:
-      nodes: categories
-      links: weighted_flows
-      color: group
-    reusable_for: [state_transition, category_flow, cohort_flow]
-
-  - id: network_graph
-    tier: P1
-    status: done
-    title: "Network graph"
-    template: "templates/network_graph.R"
-    demo_png: "demo_fig/network_graph_demo.png"
-    input_shape: edge_table
-    required_fields: [source, target]
-    optional_fields: [weight, edge_group, node_group, node_size]
-    visual_encodings:
-      nodes: entities
-      edges: relationships
-      edge_width: weight
-      color: group
-    reusable_for: [sparse_relationships, interaction_network, similarity_graph]
-
-  - id: upset_plot
-    tier: P1
-    status: done
-    title: "UpSet plot"
-    template: "templates/upset_plot.R"
-    demo_png: "demo_fig/upset_demo.png"
-    input_shape: set_membership
-    required_fields: [element, set]
-    optional_fields: [weight, group]
-    visual_encodings:
-      sets: set
-      intersections: shared_elements
-      bars: intersection_size
-    reusable_for: [set_overlap, method_consensus, feature_list_overlap]
-
-  - id: oncoplot
-    tier: P1
-    status: done
-    title: "Sparse event matrix"
-    template: "templates/oncoplot.R"
-    demo_png: "demo_fig/oncoplot_demo.png"
-    input_shape: sparse_event_matrix
-    required_fields: [row, column, event_type]
-    optional_fields: [row_group, column_group, event_weight]
-    visual_encodings:
-      x: column
-      y: row
-      fill: event_type
-      margins: event_counts
-    reusable_for: [categorical_event_matrix, mutation_landscape, binary_event_grid]
-
+- id: volcano
+  tier: P0
+  status: done
+  title: Volcano plot
+  template: templates/volcano.R
+  demo_png: demo_fig/volcano_demo.png
+  input_shape: point_table
+  required_fields:
+  - effect
+  - p_value
+  optional_fields:
+  - label
+  - group
+  - q_value
+  visual_encodings:
+    x: effect
+    y: -log10(p_value)
+    color: significance_or_group
+    label: selected_points
+  reusable_for:
+  - feature_screen
+  - association_scan
+  - differential_test
+  default_palette: volcano_up_down_ns
+  best_for: Differential expression, feature screening, any log2FC vs -log10(p) scatter
+  not_for: Time series, distribution comparison, single-group summary
+- id: manhattan
+  tier: P0
+  status: done
+  title: Manhattan plot
+  template: templates/manhattan.R
+  demo_png: demo_fig/manhattan_demo.png
+  input_shape: ordered_position_table
+  required_fields:
+  - block
+  - position
+  - p_value
+  optional_fields:
+  - label
+  - group
+  visual_encodings:
+    x: cumulative_position
+    y: -log10(p_value)
+    color: block
+    label: selected_points
+  reusable_for:
+  - genome_scan
+  - ordered_feature_scan
+  default_palette: gwas_significance
+  best_for: Genome-wide association, QTL scans, any chromosome-position vs significance
+    plot
+  not_for: Without genomic coordinates, small candidate gene sets
+- id: heatmap_clustered
+  tier: P0
+  status: done
+  title: Clustered heatmap
+  template: templates/heatmap_clustered.R
+  demo_png: demo_fig/heatmap_demo.png
+  input_shape: matrix
+  required_fields:
+  - row_id
+  - column_id
+  - value
+  optional_fields:
+  - row_group
+  - column_group
+  visual_encodings:
+    x: column_id
+    y: row_id
+    fill: value
+    annotations: row_or_column_metadata
+  reusable_for:
+  - matrix_pattern
+  - sample_clustering
+  - score_matrix
+  default_palette: npg
+  best_for: Expression matrices, sample clustering, any row×column score matrix
+  not_for: Fewer than 5 rows or columns, 2-group comparison
+- id: correlation_heatmap
+  tier: P0
+  status: done
+  title: Correlation heatmap
+  template: templates/correlation_heatmap.R
+  demo_png: demo_fig/correlation_heatmap_demo.png
+  input_shape: pairwise_matrix
+  required_fields:
+  - variable_1
+  - variable_2
+  - value
+  optional_fields:
+  - p_value
+  - label
+  visual_encodings:
+    x: variable_1
+    y: variable_2
+    fill: correlation_or_similarity
+    label: optional_value_text
+  reusable_for:
+  - correlation_matrix
+  - similarity_matrix
+  - distance_summary
+  default_palette: roma
+  best_for: Pairwise correlation matrices, similarity matrices
+  not_for: Non-symmetric matrices, unclustered feature lists
+- id: box_violin
+  tier: P0
+  status: done
+  title: Box and violin plot
+  template: templates/box_violin.R
+  demo_png: demo_fig/box_violin_demo.png
+  input_shape: grouped_values
+  required_fields:
+  - group
+  - value
+  optional_fields:
+  - sample_id
+  - facet
+  - color_group
+  visual_encodings:
+    x: group
+    y: value
+    fill: group_or_condition
+    points: observations
+  reusable_for:
+  - group_distribution
+  - condition_comparison
+  default_palette: okabe_ito
+  best_for: Continuous distribution across 2-6 groups, paired or unpaired comparisons
+  not_for: More than 8 groups, ordered time series, composition data
+- id: raincloud
+  tier: P0
+  status: done
+  title: Raincloud plot
+  template: templates/raincloud.R
+  demo_png: demo_fig/raincloud_demo.png
+  input_shape: grouped_values
+  required_fields:
+  - group
+  - value
+  optional_fields:
+  - sample_id
+  - paired_id
+  - facet
+  visual_encodings:
+    x: group
+    y: value
+    density: group_distribution
+    points: observations
+    interval: summary_distribution
+  reusable_for:
+  - distribution_with_points
+  - repeated_measure_summary
+  default_palette: okabe_ito
+  best_for: Distribution comparison with full shape visibility, 2-6 groups
+  not_for: More than 8 groups, large-N box plots where median/IQR suffice
+- id: ridgeline
+  tier: P1
+  status: done
+  title: Ridgeline plot
+  template: templates/ridgeline.R
+  demo_png: demo_fig/ridgeline_demo.png
+  input_shape: grouped_values
+  required_fields:
+  - group
+  - value
+  optional_fields:
+  - facet
+  - weight
+  visual_encodings:
+    x: value
+    y: ordered_group
+    fill: group
+    density: distribution
+  reusable_for:
+  - many_group_distribution
+  - ordered_distribution_series
+  default_palette: npg
+  best_for: Overlapping distribution comparison across many ordered groups
+  not_for: Fewer than 3 groups, categorical unordered groups
+- id: grouped_bar
+  tier: P0
+  status: done
+  title: Grouped bar plot
+  template: templates/grouped_bar.R
+  demo_png: demo_fig/grouped_bar_demo.png
+  input_shape: grouped_summary
+  required_fields:
+  - category
+  - group
+  - value
+  optional_fields:
+  - error
+  - label
+  visual_encodings:
+    x: category
+    y: value
+    fill: group
+    interval: uncertainty
+  reusable_for:
+  - summary_comparison
+  - rate_comparison
+  default_palette: npg
+  best_for: Counts, proportions, or means across categorical groups
+  not_for: Continuous individual-level data, more than 8 groups
+- id: enrichment_bubble
+  tier: P0
+  status: done
+  title: Ranked term bubble plot
+  template: templates/enrichment_bubble.R
+  demo_png: demo_fig/enrichment_bubble_demo.png
+  input_shape: ranked_term_table
+  required_fields:
+  - term
+  - score
+  - p_value
+  optional_fields:
+  - count
+  - group
+  - q_value
+  visual_encodings:
+    x: score_or_ratio
+    y: term
+    size: count
+    color: significance
+  reusable_for:
+  - ranked_categories
+  - term_summary
+  - overrepresentation_result
+  default_palette: okabe_ito
+  best_for: GO/pathway enrichment results, ranked term lists with count and significance
+  not_for: Fewer than 5 terms, non-enrichment summary statistics
+- id: enrichment_circos
+  tier: P1
+  status: done
+  title: Term-feature circos plot
+  template: templates/enrichment_circos.R
+  demo_png: demo_fig/enrichment_circos_demo.png
+  input_shape: bipartite_links
+  required_fields:
+  - source
+  - target
+  - weight
+  optional_fields:
+  - source_group
+  - target_group
+  visual_encodings:
+    sectors: source_and_target_groups
+    links: weighted_membership
+    color: group
+  reusable_for:
+  - feature_category_links
+  - bipartite_relationships
+  default_palette: npg
+  best_for: Pathway-gene bipartite links, functional enrichment with gene connections
+  not_for: Fewer than 3 pathways,Summary-only enrichment without gene links
+- id: forest_plot
+  tier: P0
+  status: done
+  title: Forest plot
+  template: templates/forest_plot.R
+  demo_png: demo_fig/forest_plot_demo.png
+  input_shape: estimate_interval
+  required_fields:
+  - term
+  - estimate
+  - lower
+  - upper
+  optional_fields:
+  - group
+  - p_value
+  - weight
+  visual_encodings:
+    x: estimate
+    xmin: lower
+    xmax: upper
+    y: term
+    color: group
+  reusable_for:
+  - model_summary
+  - effect_estimates
+  - meta_analysis
+  default_palette: volcano_up_down_ns
+  best_for: Meta-analysis, multi-variable OR/HR with confidence intervals
+  not_for: Single estimate without CI, continuous distribution comparison
+- id: lollipop
+  tier: P0
+  status: done
+  title: Lollipop plot
+  template: templates/lollipop.R
+  demo_png: demo_fig/lollipop_demo.png
+  input_shape: positioned_events
+  required_fields:
+  - position
+  - value
+  optional_fields:
+  - label
+  - event_type
+  - interval_annotation
+  visual_encodings:
+    x: position
+    y: value
+    stem: value_from_baseline
+    color: event_type
+    label: selected_events
+  reusable_for:
+  - positioned_counts
+  - ranked_events
+  - sequence_events
+  default_palette: npg
+  best_for: Mutation/protein domain sites, ranked feature positions on a linear axis
+  not_for: Continuous distribution comparison, genomic coordinate plots
+- id: pca_plot
+  tier: P0
+  status: done
+  title: PCA scatter plot
+  template: templates/pca_plot.R
+  demo_png: demo_fig/pca_demo.png
+  input_shape: embedding_table
+  required_fields:
+  - component_1
+  - component_2
+  optional_fields:
+  - group
+  - label
+  - shape_group
+  visual_encodings:
+    x: component_1
+    y: component_2
+    color: group
+    shape: shape_group
+    label: selected_points
+  reusable_for:
+  - linear_embedding
+  - sample_qc
+  - dimension_reduction
+  default_palette: okabe_ito
+  best_for: Dimensionality reduction, sample clustering in PC space
+  not_for: Pre-labeled single-axis summaries, time series
+- id: umap_plot
+  tier: P1
+  status: done
+  title: UMAP scatter plot
+  template: templates/umap_plot.R
+  demo_png: demo_fig/umap_demo.png
+  input_shape: embedding_table
+  required_fields:
+  - embedding_1
+  - embedding_2
+  optional_fields:
+  - group
+  - label
+  - facet
+  visual_encodings:
+    x: embedding_1
+    y: embedding_2
+    color: group
+    label: cluster_or_point_label
+  reusable_for:
+  - nonlinear_embedding
+  - cluster_map
+  - manifold_view
+  default_palette: okabe_ito
+  best_for: Single-cell or high-dimensional embedding visualization with cluster labels
+  not_for: Pre-computed statistics, few samples
+- id: roc_curve
+  tier: P1
+  status: done
+  title: ROC curve
+  template: templates/roc_curve.R
+  demo_png: demo_fig/roc_demo.png
+  input_shape: classifier_curve
+  required_fields:
+  - false_positive_rate
+  - true_positive_rate
+  optional_fields:
+  - model
+  - auc
+  - threshold
+  visual_encodings:
+    x: false_positive_rate
+    y: true_positive_rate
+    color: model
+    label: auc
+  reusable_for:
+  - classifier_performance
+  - model_comparison
+  default_palette: okabe_ito
+  best_for: Classifier performance, diagnostic test evaluation, AUC comparison
+  not_for: Feature selection, distribution comparison
+- id: km_survival
+  tier: P1
+  status: done
+  title: Kaplan-Meier curve
+  template: templates/km_survival.R
+  demo_png: demo_fig/km_survival_demo.png
+  input_shape: time_to_event
+  required_fields:
+  - time
+  - event
+  optional_fields:
+  - group
+  - censor
+  visual_encodings:
+    x: time
+    y: survival_probability
+    color: group
+    marks: censoring
+  reusable_for:
+  - time_to_event_analysis
+  - stratified_event_curve
+  default_palette: survival
+  best_for: Time-to-event analysis, Kaplan-Meier survival curves with log-rank test
+  not_for: Non-survival continuous outcomes, cross-sectional comparison
+- id: sankey
+  tier: P1
+  status: done
+  title: Sankey flow
+  template: templates/sankey.R
+  demo_png: demo_fig/sankey_demo.png
+  input_shape: flow_table
+  required_fields:
+  - source
+  - target
+  - weight
+  optional_fields:
+  - source_stage
+  - target_stage
+  - group
+  visual_encodings:
+    nodes: categories
+    links: weighted_flows
+    color: group
+  reusable_for:
+  - state_transition
+  - category_flow
+  - cohort_flow
+  default_palette: npg
+  best_for: Flow/transition between categories, APA pattern shifts across stages
+  not_for: Static single-timepoint comparison, correlation matrices
+- id: network_graph
+  tier: P1
+  status: done
+  title: Network graph
+  template: templates/network_graph.R
+  demo_png: demo_fig/network_graph_demo.png
+  input_shape: edge_table
+  required_fields:
+  - source
+  - target
+  optional_fields:
+  - weight
+  - edge_group
+  - node_group
+  - node_size
+  visual_encodings:
+    nodes: entities
+    edges: relationships
+    edge_width: weight
+    color: group
+  reusable_for:
+  - sparse_relationships
+  - interaction_network
+  - similarity_graph
+  default_palette: npg
+  best_for: Gene/protein interaction networks, pathway connectivity
+  not_for: Tree structures, temporal sequences, few nodes
+- id: upset_plot
+  tier: P1
+  status: done
+  title: UpSet plot
+  template: templates/upset_plot.R
+  demo_png: demo_fig/upset_demo.png
+  input_shape: set_membership
+  required_fields:
+  - element
+  - set
+  optional_fields:
+  - weight
+  - group
+  visual_encodings:
+    sets: set
+    intersections: shared_elements
+    bars: intersection_size
+  reusable_for:
+  - set_overlap
+  - method_consensus
+  - feature_list_overlap
+  default_palette: okabe_ito
+  best_for: Set intersection analysis for 3+ gene/protein lists
+  not_for: Exactly 2 sets (use Venn instead), single-set summaries
+- id: oncoplot
+  tier: P1
+  status: done
+  title: Sparse event matrix
+  template: templates/oncoplot.R
+  demo_png: demo_fig/oncoplot_demo.png
+  input_shape: sparse_event_matrix
+  required_fields:
+  - row
+  - column
+  - event_type
+  optional_fields:
+  - row_group
+  - column_group
+  - event_weight
+  visual_encodings:
+    x: column
+    y: row
+    fill: event_type
+    margins: event_counts
+  reusable_for:
+  - categorical_event_matrix
+  - mutation_landscape
+  - binary_event_grid
+  default_palette: npg
+  best_for: Tumor mutation landscape, sample-by-gene binary event matrix
+  not_for: Continuous expression data, fewer than 5 samples
+- id: scatter
+  tier: P0
+  status: done
+  title: Scatter plot
+  template: templates/scatter.py
+  demo_png: demo_fig/scatter_demo.png
+  input_shape: point_table
+  required_fields:
+  - x
+  - y
+  optional_fields:
+  - group
+  - label
+  - size
+  visual_encodings:
+    x: x
+    y: y
+    color: group
+    size: optional_size
+    label: selected_points
+  reusable_for:
+  - quantitative_relationship
+  - method_comparison
+  - calibration_check
+  default_palette: okabe_ito
+  best_for: Correlation between two continuous variables, regression visualization
+  not_for: Categorical comparison, more than 10k points without binning
+- id: stacked_area
+  tier: P1
+  status: done
+  title: Stacked area chart
+  template: templates/stacked_area.py
+  demo_png: demo_fig/stacked_area_demo.png
+  input_shape: composition_table
+  required_fields:
+  - stage
+  - component
+  - proportion
+  optional_fields:
+  - group
+  visual_encodings:
+    x: stage
+    y: proportion
+    fill: component
+  reusable_for:
+  - composition_over_ordered_axis
+  - apa_usage_fraction
+  default_palette: npg
+  best_for: Composition change over time, proportion shifts across ordered axis
+  not_for: Single time point, unordered categories
+- id: qq_plot
+  tier: P1
+  status: done
+  title: QQ plot (GWAS p-values)
+  template: templates/qq_plot.py
+  demo_png: demo_fig/qq_demo.png
+  input_shape: point_table
+  required_fields:
+  - pvalue
+  optional_fields:
+  - snp_id
+  visual_encodings:
+    x: expected_quantile
+    y: observed_quantile
+    color: significance
+  reusable_for:
+  - p_value_qc
+  - distribution_diagnostic
+  - gwas_qc
+  default_palette: gwas_significance
+  best_for: P-value distribution assessment, GWAS/QTL quality control
+  not_for: Non-p-value data, categorical outcomes
+- id: histogram_density
+  tier: P0
+  status: done
+  title: Histogram with density overlay
+  template: templates/histogram_density.py
+  demo_png: demo_fig/histogram_density_demo.png
+  input_shape: numeric_vector
+  required_fields:
+  - value
+  optional_fields:
+  - group
+  visual_encodings:
+    x: value
+    y: density
+    fill: group
+    overlay: kde_curve
+  reusable_for:
+  - single_variable_distribution
+  - qc_distribution
+  - group_distribution_comparison
+  default_palette: okabe_ito
+  best_for: Single or overlaid distribution shape, density estimation
+  not_for: Group comparison with statistics, ordered time series
+- id: line_ribbon
+  tier: P0
+  status: done
+  title: Line with confidence ribbon
+  template: templates/line_ribbon.py
+  demo_png: demo_fig/line_ribbon_demo.png
+  input_shape: ordered_series
+  required_fields:
+  - stage
+  - group
+  - y_mean
+  - y_lo
+  - y_hi
+  optional_fields:
+  - y_lo95
+  - y_hi95
+  visual_encodings:
+    x: ordered_stage
+    y: y_mean
+    ribbon: confidence_interval
+    color: group
+  reusable_for:
+  - time_course
+  - dose_response
+  - ordered_trend_with_uncertainty
+  default_palette: okabe_ito
+  best_for: Trend with uncertainty band, CI/SD ribbon, multi-group trajectories
+  not_for: Categorical comparison without ordering, single point per group
 planned_templates:
-  - id: scatter
-    tier: P0
-    input_shape: point_table
-    reusable_for: [quantitative_relationship, method_comparison, calibration_check]
-  - id: histogram_density
-    tier: P0
-    input_shape: numeric_vector
-    reusable_for: [single_variable_distribution, qc_distribution]
-  - id: line_ribbon
-    tier: P0
-    input_shape: ordered_series
-    reusable_for: [time_course, dose_response, ordered_trend_with_uncertainty]
-  - id: annotated_heatmap
-    tier: P0
-    input_shape: matrix_with_metadata
-    reusable_for: [matrix_pattern_with_row_column_annotations]
-  - id: paired_scatter
-    tier: P1
-    input_shape: paired_feature_values
-    reusable_for: [paired_condition_comparison, before_after_feature_scatter]
-  - id: alluvial_plot
-    tier: P1
-    input_shape: multi_stage_flow
-    reusable_for: [multi_stage_category_flow]
-  - id: chord_plot
-    tier: P1
-    input_shape: weighted_pair_links
-    reusable_for: [category_relationship_summary]
-  - id: qq_plot
-    tier: P1
-    input_shape: quantile_table
-    reusable_for: [p_value_qc, distribution_diagnostic]
-  - id: ma_plot
-    tier: P1
-    input_shape: mean_difference_table
-    reusable_for: [intensity_dependent_difference]
-  - id: stacked_bar
-    tier: P1
-    input_shape: composition_table
-    reusable_for: [component_fraction_by_group]
-  - id: stacked_area
-    tier: P1
-    input_shape: ordered_composition_table
-    reusable_for: [composition_over_ordered_axis]
-  - id: dumbbell_plot
-    tier: P1
-    input_shape: paired_item_values
-    reusable_for: [two_condition_change]
-  - id: dot_matrix
-    tier: P1
-    input_shape: feature_group_summary
-    reusable_for: [two_metric_matrix_summary]
-  - id: regional_association
-    tier: P1
-    input_shape: regional_association_table
-    reusable_for: [locus_zoom, regional_signal_with_annotation]
-  - id: precision_recall_curve
-    tier: P1
-    input_shape: classifier_curve
-    reusable_for: [imbalanced_classifier_performance]
-  - id: genomic_segments
-    tier: P2
-    input_shape: interval_table
-    reusable_for: [linear_interval_annotation]
-  - id: circos_plot
-    tier: P2
-    input_shape: circular_track_table
-    reusable_for: [multi_track_circular_summary]
-  - id: synteny_links
-    tier: P2
-    input_shape: paired_interval_table
-    reusable_for: [comparative_genomics_interval_links]
+- id: annotated_heatmap
+  tier: P0
+  input_shape: matrix_with_metadata
+  reusable_for:
+  - matrix_pattern_with_row_column_annotations
+- id: paired_scatter
+  tier: P1
+  input_shape: paired_feature_values
+  reusable_for:
+  - paired_condition_comparison
+  - before_after_feature_scatter
+- id: alluvial_plot
+  tier: P1
+  input_shape: multi_stage_flow
+  reusable_for:
+  - multi_stage_category_flow
+- id: chord_plot
+  tier: P1
+  input_shape: weighted_pair_links
+  reusable_for:
+  - category_relationship_summary
+- id: ma_plot
+  tier: P1
+  input_shape: mean_difference_table
+  reusable_for:
+  - intensity_dependent_difference
+- id: stacked_bar
+  tier: P1
+  input_shape: composition_table
+  reusable_for:
+  - component_fraction_by_group
+- id: dumbbell_plot
+  tier: P1
+  input_shape: paired_item_values
+  reusable_for:
+  - two_condition_change
+- id: dot_matrix
+  tier: P1
+  input_shape: feature_group_summary
+  reusable_for:
+  - two_metric_matrix_summary
+- id: regional_association
+  tier: P1
+  input_shape: regional_association_table
+  reusable_for:
+  - locus_zoom
+  - regional_signal_with_annotation
+- id: precision_recall_curve
+  tier: P1
+  input_shape: classifier_curve
+  reusable_for:
+  - imbalanced_classifier_performance
+- id: genomic_segments
+  tier: P2
+  input_shape: interval_table
+  reusable_for:
+  - linear_interval_annotation
+- id: circos_plot
+  tier: P2
+  input_shape: circular_track_table
+  reusable_for:
+  - multi_track_circular_summary
+- id: synteny_links
+  tier: P2
+  input_shape: paired_interval_table
+  reusable_for:
+  - comparative_genomics_interval_links

@@ -14,6 +14,7 @@
 6. Genomics palettes: volcano_up_down_ns, apa_pattern, gwas_significance — not arbitrary hex.
 7. No rainbow/jet. Use viridis (seq) or roma/vik (div).
 8. No bar+error bar for continuous data. No >3-set Venn. No >5-class pie charts.
+9. Each chart in catalog.yaml has `default_palette` — use it unless user overrides.
 
 ## Chart Selection ( abbreviated)
 | Claim | Chart | Template |

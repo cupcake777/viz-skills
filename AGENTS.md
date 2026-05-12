@@ -20,9 +20,11 @@ The entry point is **`03_plotting-library/catalog.yaml`**. It is machine-readabl
 Lookup algorithm:
 1. Identify the user's analytical claim: distribution, comparison, trend, relationship, differential_signal, genomic_position, matrix_pattern, enrichment, overlap, composition, embedding, flow_network, trajectory, ranking, marker
 2. Grep `catalog.yaml` for `claim_types` matching that claim, or grep for `id:` matching the chart name
-3. Read the `template:` field — that's the script path relative to `03_plotting-library/`
-4. Read the `required_fields:` and `optional_fields:` to understand column mappings
-5. Check `status: done` — only `done` templates have runnable code; `planned` means no script exists yet
+3. Read the `default_palette:` field — use this palette for the chart unless the user specifies otherwise
+4. Read the `best_for:` and `not_for:` fields — validate the chart fits the use case
+5. Read the `template:` field — that's the script path relative to `03_plotting-library/`
+6. Read the `required_fields:` and `optional_fields:` to understand column mappings
+7. Check `status: done` — only `done` templates have runnable code; `planned` means no script exists yet
 
 ## Execution Rules
 
