@@ -175,7 +175,8 @@ classification_basis:
 bioinformatics_coverage:
   covered_core:
   - 'Differential or association summary: volcano, Manhattan, forest.'
-  - 'Matrix and clustering: clustered heatmap, correlation heatmap, sparse event matrix, annotated heatmap.'
+  - 'Matrix and clustering: clustered heatmap, correlation heatmap, sparse event matrix,
+    annotated heatmap.'
   - 'Grouped distributions: box/violin, raincloud, ridgeline.'
   - 'Composition: stacked bar, ternary plot, stacked area.'
   - 'Density and histogram overlays: histogram + KDE for distribution inspection.'
@@ -731,7 +732,7 @@ templates:
   not_for: Continuous expression data, fewer than 5 samples
 - id: scatter
   tier: P0
-  status: done
+  status: planned
   title: Scatter plot
   template: templates/scatter.py
   demo_png: demo_fig/scatter_demo.png
@@ -758,7 +759,7 @@ templates:
   not_for: Categorical comparison, more than 10k points without binning
 - id: stacked_area
   tier: P1
-  status: done
+  status: planned
   title: Stacked area chart
   template: templates/stacked_area.py
   demo_png: demo_fig/stacked_area_demo.png
@@ -781,7 +782,7 @@ templates:
   not_for: Single time point, unordered categories
 - id: qq_plot
   tier: P1
-  status: done
+  status: planned
   title: QQ plot (GWAS p-values)
   template: templates/qq_plot.py
   demo_png: demo_fig/qq_demo.png
@@ -803,7 +804,7 @@ templates:
   not_for: Non-p-value data, categorical outcomes
 - id: histogram_density
   tier: P0
-  status: done
+  status: planned
   title: Histogram with density overlay
   template: templates/histogram_density.py
   demo_png: demo_fig/histogram_density_demo.png
@@ -826,7 +827,7 @@ templates:
   not_for: Group comparison with statistics, ordered time series
 - id: line_ribbon
   tier: P0
-  status: done
+  status: planned
   title: Line with confidence ribbon
   template: templates/line_ribbon.py
   demo_png: demo_fig/line_ribbon_demo.png
@@ -878,7 +879,7 @@ templates:
   default_palette: viridis
   best_for: Cell fate trajectories on UMAP/tSNE embeddings with directional arrows
   not_for: Static clustering without direction, non-embedding data
-  paper_source: "Setty et al., Nature Biotechnology 2019 (Palantir)"
+  paper_source: Setty et al., Nature Biotechnology 2019 (Palantir)
 - id: dot_matrix
   tier: P1
   status: done
@@ -905,7 +906,7 @@ templates:
   default_palette: RdYlBu
   best_for: Methods × metrics benchmark, gene × sample dot summary with dual encoding
   not_for: Single continuous variable, pairwise correlation
-  paper_source: "Luecken et al., Nature Methods 2022 (scib benchmark)"
+  paper_source: Luecken et al., Nature Methods 2022 (scib benchmark)
 - id: knee_plot
   tier: P1
   status: done
@@ -931,7 +932,7 @@ templates:
   default_palette: two_group
   best_for: Single-cell UMI knee plot, barcode filtering, inflection detection
   not_for: Non-ranked data, categorical comparisons
-  paper_source: "Fleming et al., Nature Methods 2023 (CellBender)"
+  paper_source: Fleming et al., Nature Methods 2023 (CellBender)
 - id: gene_trend_heatmap
   tier: P1
   status: done
@@ -956,7 +957,7 @@ templates:
   default_palette: RdBu
   best_for: Gene expression dynamics along pseudotime, sorted by peak activation
   not_for: Sample-by-sample clustering, categorical x-axis
-  paper_source: "Setty et al., Nature Biotechnology 2019 (Palantir)"
+  paper_source: Setty et al., Nature Biotechnology 2019 (Palantir)
 - id: density_scatter
   tier: P1
   status: done
@@ -980,7 +981,7 @@ templates:
   default_palette: viridis
   best_for: Large scatter plots (>5K points) with density coloring to reduce overplotting
   not_for: Small datasets (<500 points), categorical comparisons
-  paper_source: "McInnes et al., 2018 (UMAP paper)"
+  paper_source: McInnes et al., 2018 (UMAP paper)
 - id: feature_plot
   tier: P0
   status: done
@@ -1005,7 +1006,8 @@ templates:
   - single_cell_feature_overlay
   - spatial_expression_pattern
   default_palette: viridis
-  best_for: Overlaying continuous gene expression on UMAP/tSNE, single-cell feature plots
+  best_for: Overlaying continuous gene expression on UMAP/tSNE, single-cell feature
+    plots
   not_for: Static bar charts, non-embedding coordinate data
 - id: stacked_bar
   tier: P0
@@ -1058,7 +1060,8 @@ templates:
   - expression_matrix_with_pathway_annotation
   - sample_clustering_with_condition_labels
   default_palette: npg
-  best_for: Clustered heatmaps with categorical row/column annotation bars, pathway membership
+  best_for: Clustered heatmaps with categorical row/column annotation bars, pathway
+    membership
   not_for: Correlation matrices, single-group summaries without annotations
 - id: ternary_plot
   tier: P0
@@ -1285,7 +1288,8 @@ planned_templates:
   - dimensionality_reduction_with_feature_contribution
   - variable_importance_in_PCA
   default_palette: nature
-  best_for: PCA scatter with overlaid loading arrows showing which features drive clustering
+  best_for: PCA scatter with overlaid loading arrows showing which features drive
+    clustering
   not_for: UMAP/t-SNE (no meaningful loadings), non-PCA embedding
 - id: fiber_photometry
   tier: P1
@@ -1311,7 +1315,8 @@ planned_templates:
   - dLight_dF_F_comparison
   - multi_trial_neural_signal
   default_palette: nature
-  best_for: Multi-trial z-score heatmaps comparing conditions (vehicle vs drug), fiber photometry or calcium imaging
+  best_for: Multi-trial z-score heatmaps comparing conditions (vehicle vs drug), fiber
+    photometry or calcium imaging
   not_for: Single-trial line traces, non-time-aligned data, categorical comparisons
 - id: syllable_frequency
   tier: P1
@@ -1336,7 +1341,8 @@ planned_templates:
   - vocalization_or_behavior_frequency_profiling
   - grouped_point_comparison_with_error_bars
   default_palette: nature
-  best_for: Comparing frequency or rate across discrete categories with SEM error bars and manual dodge
+  best_for: Comparing frequency or rate across discrete categories with SEM error
+    bars and manual dodge
   not_for: Continuous time series, single-group summary, distribution comparison
 - id: peri_event_raster
   tier: P1
@@ -1362,5 +1368,6 @@ planned_templates:
   - stimulus_response_trace
   - optogenetic_or_pharmacological_perturbation
   default_palette: nature
-  best_for: Time-locked neural signal visualization with individual traces, mean+SEM ribbon, and trial heatmap
+  best_for: Time-locked neural signal visualization with individual traces, mean+SEM
+    ribbon, and trial heatmap
   not_for: Unaligned continuous recording, single-point comparisons
