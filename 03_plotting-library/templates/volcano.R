@@ -15,11 +15,7 @@ suppressPackageStartupMessages({
 tryCatch(source("/app/r_libs/style/base_plot.R"),
          error = function(e) source("base_plot.R"))
 
-SAFE_COLORS <- c(
-  up = "#D73027",
-  down = "#4575B4",
-  ns = "#D8DCE2"
-)
+SAFE_COLORS <- VIZ_PALETTES$volcano
 
 generate_mock_data <- function(n = 3000, seed = 42) {
   set.seed(seed)

@@ -9,7 +9,7 @@ User asks: "Draw a volcano plot for my differential expression data."
 1. Read `02_sci-fig/SKILL.md` — find the Claim type (differential_signal) and check the decision tree
 2. Grep `03_plotting-library/catalog.yaml` for `id: volcano`
 3. Use the `template:` field to locate the script: `03_plotting-library/templates/volcano.R`
-4. Source `03_plotting-library/style/base_plot.R` for house style
+4. Source `03_plotting-library/templates/base_plot.R` for house style
 5. Replace `generate_mock_data()` with real data loading
 6. Run: `Rscript templates/volcano.R`
 
@@ -36,13 +36,14 @@ Lookup algorithm:
 
 ## Color Rules
 
-Before choosing colors, read `02_sci-fig/SKILL.md` sections "Step 1.5: Semantic coloring" and "Step 3: Visual standards".
+Before choosing colors, read `02_sci-fig/references/color-palettes.md` — the single source of truth for all palettes.
 
 Critical rules:
 - Semantic colors are locked per role: blue=proposed/baseline, green=positive/gain, red=negative/loss, gray=NS. **Never remap these across charts in the same project.**
-- Use `get_palette("okabe_ito")` as default categorical palette (CVD-safe). Override with journal palettes (npg, nejm, lancet) only when the target journal requires it.
-- Genomics-specific palettes: `volcano_up_down_ns` for volcano, `gwas_significance` for Manhattan plots.
+- Directional variables (up/down, gain/loss) use `#D55E00`/`#0072B2` (Okabe-Ito), NOT positive/negative colors.
+- Use `get_palette("morandi")` as default project palette. Override with journal palettes (npg, nejm, lancet) only when the target journal requires it.
 - **Never use rainbow/jet colormaps.** Use viridis (sequential) or roma/vik (diverging, CVD-safe).
+- If `config/plot_config.yaml` exists in the project root, source it first — its palette overrides all defaults.
 
 ## What NOT to Do
 
@@ -64,20 +65,32 @@ Critical rules:
 
 ## Project-Level Color Palettes
 
-If this repo is used inside a project that defines its own color palette, set it once and use it across all figures:
+If this repo is used inside a project, lock the palette in `config/plot_config.yaml`:
+
+```yaml
+# config/plot_config.yaml
+palette: morandi
+continuous_colormap: mako
+semantic:
+  up: "#D55E00"
+  down: "#0072B2"
+  ns: "#BBBBBB"
+```
+
+Then load it before any plotting code:
 
 ```python
-# Python (in your analysis script)
-from style.color_palettes import get_palette, apply_palette
-apply_palette("okabe_ito")  # default
-
-# R (in your analysis script)
-source("style/color_palettes.R")
-use_pal("okabe_ito")  # default
+import yaml
+from pathlib import Path
+_cfg = Path("config/plot_config.yaml")
+if _cfg.exists():
+    PLOT_CONFIG = yaml.safe_load(_cfg.read_text())
+    apply_palette(PLOT_CONFIG.get("palette", "morandi"))
 ```
 
 ```r
-# Project-locked colors example (define per project)
-# project_colors <- c(Group1="#4DBBD5", Group2="#00A087", Group3="#3C5488",
-#                     Group4="#F39B7F", Group5="#E64B35", Group6="#8491B4")
+if (file.exists("config/plot_config.yaml")) {
+  PLOT_CONFIG <- yaml::read_yaml("config/plot_config.yaml")
+  use_pal(PLOT_CONFIG$palette %||% "morandi")
+}
 ```

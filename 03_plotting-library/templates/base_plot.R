@@ -13,6 +13,7 @@ VIZ_PALETTES <- list(
   nature = c("#E64B35", "#4DBBD5", "#00A087", "#3C5488", "#F39B7F", "#8491B4", "#91D1C2", "#DC0000"),
   safe = c("#4477AA", "#EE6677", "#228833", "#CCBB44", "#66CCEE", "#AA3377"),
   two_group = c("#4575B4", "#D73027"),
+  volcano = c(up = "#D55E00", down = "#0072B2", ns = "#BBBBBB"),
   disease = c(Control = "#3C5488", MDD = "#E64B35", SCZ = "#4DBBD5", BD = "#00A087", ASD = "#F39B7F"),
   lifespan = c(Fetal = "#4DBBD5", Neonatal = "#00A087", Child = "#3C5488", Adolescent = "#F39B7F", Adult = "#E64B35", Aged = "#8491B4")
 )

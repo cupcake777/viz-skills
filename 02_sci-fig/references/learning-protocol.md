@@ -29,12 +29,11 @@
 
 1. 写出可执行模板，静态科研图优先使用 R，放到 `../03_plotting-library/templates/`
 2. **执行代码，用mock数据渲染出PNG**（例如 `Rscript ../03_plotting-library/templates/xxx.R` 生成 `demo_fig/*_demo.png`）
-3. 发图给用户看（Telegram发送图片或Gallery链接）
+3. 发图给用户看
 4. 用户确认后才保存：
    - 脚本存 `templates/`, mock数据存 `demo_data/`
    - 更新 `catalog.yaml`
    - recipe存 `references/`
-   - 重建Gallery或更新Brain API挂载的demo图
 5. 用户说修改 → 按反馈改 → 重新渲染 → 再审
 
 **⚠️ 只存markdown recipe不入库。入库=可执行脚本+用户确认过的图。**
@@ -57,12 +56,33 @@ catalog.yaml                 ← 更新数据类型→模板映射
 references/new_chart.md     ← recipe文档（When/Learn/Code/Params/Pitfalls/Variants）
 ```
 
-### L5: 应用
+### L5: 竞品调研（Chart Gap Analysis）
+
+系统性扩展模板库时，进行竞品网站调研：
+
+1. **爬取竞品站点** — SRplot、ChiPlot、Bioincloud等平台的完整图表分类
+2. **建立对照表** — 逐项对比，标记✅已有/🔴缺失
+3. **优先级分级** — P0(三站都有且高频) > P1(常见) > P2(特色但低频)
+4. **实施顺序** — 从P0开始，每个模板: mock数据→代码→渲染→用户确认→入库
+5. **调研产出** — 写入 `references/site-survey.md`
+
+### L6: 语义配色规则
+
+所有新模板应优先使用语义色映射，而非任意hex：
+- 蓝=己方/提出方法, 绿=正面/增益, 红=负面/衰减, 灰蓝=基线/对照
+- 方向性变量(up/down)用 Okabe-Ito 色(#D55E00/#0072B2)
+- 同一项目内绝不重映射语义色
+
+详细规则见 [color-palettes.md](color-palettes.md)
+
+---
+
+## L7: 应用优先级
 
 后续绘图时，检查优先级：
-1. 当前项目是否已指定palette？用那个
+1. 项目 `config/plot_config.yaml` 是否指定了palette？用那个
 2. 用户是否为该图表类型发过示例图？优先用那个变体
 3. 跟数据/分析场景匹配的变体？用那个
-4. 都没有 → 用基础recipe + `templates/base_plot.R` 默认风格
+4. 都没有 → 用基础recipe + 默认风格
 
 ---
