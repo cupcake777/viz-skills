@@ -43,14 +43,17 @@ def generate_mock_data(n_per_chr=5000, n_chr=22, seed=42):
         n_peaks = rng.integers(0, 5)
         peak_idx = rng.choice(n_per_chr, size=min(n_peaks, n_per_chr), replace=False)
         pvals[peak_idx] = 10 ** rng.uniform(-12, -6, len(peak_idx))
-        # 为peak位点和部分非peak位点分配gene名
+        # 为peak位点分配真实基因名
+        _gene_pool = [
+            "BRCA1", "TP53", "EGFR", "KRAS", "MYC", "PTEN", "APC", "RB1",
+            "BRAF", "PIK3CA", "CDH1", "NOTCH1", "ERBB2", "ALK", "RET",
+            "FOXP1", "SOX9", "GATA3", "CDKN2A", "SMAD4", "NF1", "VHL",
+            "WT1", "MSH2", "MLH1", "ATM", "CHEK2", "PALB2", "RAD51",
+            "ESR1", "AR",
+        ]
         gene_names = {}
         for j, pidx in enumerate(peak_idx):
-            gene_names[int(pidx)] = f"GENE{chrom}_{j}"
-        some_nonpeak = rng.choice([i for i in range(n_per_chr) if i not in peak_idx],
-                                   size=min(20, n_per_chr), replace=False)
-        for j, idx in enumerate(some_nonpeak):
-            gene_names[int(idx)] = f"LOC{chrom}_{j}"
+            gene_names[int(pidx)] = _gene_pool[j % len(_gene_pool)]
         for i, (pos, pval) in enumerate(zip(positions, pvals)):
             records.append({
                 "chr": chrom, "pos": int(pos), "pvalue": pval,
@@ -121,7 +124,9 @@ def plot(df, chr_col="chr", pos_col="pos", pval_col="pvalue",
             if len(peaks) > 0:
                 auto_label(ax, texts=peaks[peak_label_col].astype(str).tolist(),
                            x=peaks["cum_pos"].tolist(),
-                           y=peaks["neg_log10p"].tolist())
+                           y=peaks["neg_log10p"].tolist(),
+                           force_text=(0.5, 0.5),
+                           force_points=(0.5, 0.5))
 
     # X轴标签
     chr_centers = {c: chr_offset[c] + chr_max[c] / 2 for c in sorted(chr_offset)}
@@ -130,10 +135,14 @@ def plot(df, chr_col="chr", pos_col="pos", pval_col="pvalue",
 
     ax.set_xlabel("Chromosome")
     ax.set_ylabel("-log₁₀(p-value)")
-    ax.set_title("Manhattan Plot")
+    # No title — Nature style prefers no titles
 
     apply_gallery_polish(ax)
     polish_legend(ax, loc="best")
+
+    # Extend y-axis top margin to avoid label crowding
+    y_max = df["neg_log10p"].max()
+    ax.set_ylim(bottom=ax.get_ylim()[0], top=y_max * 1.20)
 
     if save_path:
         save_fig(ax.figure, Path(save_path).stem.replace("_demo", ""),

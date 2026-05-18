@@ -1,4 +1,8 @@
-source(file.path(dirname(normalizePath(sub("^--file=", "", commandArgs(FALSE)[grepl("^--file=", commandArgs(FALSE))][1]))), "base_plot.R"))
+tryCatch(tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R"))),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 suppressPackageStartupMessages(library(ggplot2))
 
 generate_mock_data <- function(seed=42){set.seed(seed); sets<-c("eQTL","sQTL","apaQTL","GWAS"); els<-paste0("Gene",1:300); do.call(rbind,lapply(els,function(e){data.frame(element=e,set_membership=sample(sets,sample(1:3,1))) }))}

@@ -189,15 +189,6 @@ bioinformatics_coverage:
       reason: Genome-wide Manhattan is not enough for locus-level interpretation.
     - id: precision_recall_curve
       reason: ROC is insufficient for imbalanced classification problems.
-    - id: phylogenetic_tree
-      reason: Evolutionary relationships and taxonomic clustering are common in microbiome
-        and comparative genomics.
-    - id: rarefaction_curve
-      reason: Essential QC for species richness and sampling completeness in diversity
-        studies.
-    - id: bee_swarm
-      reason: Compact distribution display for many groups, bridges box-violin and dot
-        plots.
     P2:
     - id: genomic_segments
       reason: Needed for gene models, interval annotations, and assay tracks.
@@ -1105,14 +1096,47 @@ planned_templates:
   - before_after_feature_scatter
 - id: alluvial_plot
   tier: P1
+  status: done
+  title: Alluvial plot
+  template: templates/alluvial_plot.R
+  demo_png: demo_fig/alluvial_plot_demo.png
   input_shape: multi_stage_flow
+  required_fields:
+  - stage_columns
+  - frequency
+  optional_fields:
+  - fill
+  visual_encodings:
+    x: stages
+    y: frequency
+    fill: category
+    flow: alluvium
   reusable_for:
   - multi_stage_category_flow
+  default_palette: okabe_ito
+  best_for: Multi-stage categorical flow (cell fate, treatment pathways, survey transitions)
+  not_for: Continuous distributions, two-group comparisons
 - id: chord_plot
   tier: P1
+  status: done
+  title: Chord diagram
+  template: templates/chord_plot.R
+  demo_png: demo_fig/chord_plot_demo.png
   input_shape: weighted_pair_links
+  required_fields:
+  - adjacency_matrix
+  optional_fields:
+  - sector_colors
+  - transparency
+  visual_encodings:
+    x: sector
+    link: inter_sector_flow
+    width: flow_magnitude
   reusable_for:
   - category_relationship_summary
+  default_palette: nature
+  best_for: Pairwise flow between categories (tissue interactions, trade, migration)
+  not_for: Hierarchical data, time series, single-group distributions
 - id: ma_plot
   tier: P1
   input_shape: mean_difference_table
@@ -1120,9 +1144,26 @@ planned_templates:
   - intensity_dependent_difference
 - id: dumbbell_plot
   tier: P1
+  status: done
+  title: Dumbbell plot
+  template: templates/dumbbell_plot.R
+  demo_png: demo_fig/dumbbell_plot_demo.png
   input_shape: paired_item_values
+  required_fields:
+  - item
+  - condition
+  - value
+  optional_fields:
+  - condition_labels
+  visual_encodings:
+    x: value
+    y: item
+    segment: paired_connection
   reusable_for:
   - two_condition_change
+  default_palette: two_group
+  best_for: Paired before/after comparisons (fold change, clinical pre/post)
+  not_for: More than 2 conditions, unpaired data, large N
 - id: regional_association
   tier: P1
   input_shape: regional_association_table
@@ -1151,19 +1192,175 @@ planned_templates:
   - comparative_genomics_interval_links
 - id: phylogenetic_tree
   tier: P1
+  status: done
+  title: Phylogenetic tree
+  template: templates/phylogenetic_tree.R
+  demo_png: demo_fig/phylogenetic_tree_demo.png
   input_shape: hierarchical_branching
+  required_fields:
+  - distance_matrix_or_hclust
+  optional_fields:
+  - n_clades
+  - labels
+  visual_encodings:
+    x: branch_position
+    y: leaf_order
+    colour: clade
   reusable_for:
   - evolutionary_relationships
   - taxonomic_clustering
+  default_palette: nature
+  best_for: Hierarchical clustering trees, phylogenies, dendrograms
+  not_for: Non-hierarchical data, networks, flat comparisons
 - id: bee_swarm
   tier: P1
+  status: done
+  title: Bee swarm plot
+  template: templates/bee_swarm.R
+  demo_png: demo_fig/bee_swarm_demo.png
   input_shape: grouped_values
+  required_fields:
+  - group
+  - value
+  optional_fields:
+  - point_size
+  - boxplot_width
+  visual_encodings:
+    x: group
+    y: value
+    colour: group
+    point: individual_observation
   reusable_for:
   - distribution_with_individual_points
   - compact_dot_distribution
+  default_palette: okabe_ito
+  best_for: Compact distribution display showing every observation with box overlay
+  not_for: More than 12 groups, binned/aggregated data
 - id: rarefaction_curve
   tier: P1
+  status: done
+  title: Rarefaction curve
+  template: templates/rarefaction_curve.R
+  demo_png: demo_fig/rarefaction_curve_demo.png
   input_shape: accumulation_table
+  required_fields:
+  - species_or_otu
+  - sample
+  optional_fields:
+  - group
+  visual_encodings:
+    x: sampling_effort
+    y: observed_richness
+    ribbon: confidence_interval
+    colour: group
   reusable_for:
   - species_richness_accumulation
   - diversity_saturation
+  default_palette: okabe_ito
+  best_for: Sampling completeness, species richness vs effort, diversity saturation
+  not_for: Non-accumulation data, single-sample comparisons
+- id: pca_biplot
+  tier: P0
+  status: done
+  title: PCA biplot with loadings
+  template: templates/pca_biplot.R
+  demo_png: demo_fig/pca_biplot_demo.png
+  input_shape: embedding_with_loadings
+  required_fields:
+  - PC1
+  - PC2
+  - group_label
+  - feature
+  - loading_PC1
+  - loading_PC2
+  optional_fields:
+  - variance explained
+  visual_encodings:
+    x: PC1
+    y: PC2
+    colour: group_label
+    arrow: feature_loading
+    fill: loading_value
+  reusable_for:
+  - dimensionality_reduction_with_feature_contribution
+  - variable_importance_in_PCA
+  default_palette: nature
+  best_for: PCA scatter with overlaid loading arrows showing which features drive clustering
+  not_for: UMAP/t-SNE (no meaningful loadings), non-PCA embedding
+- id: fiber_photometry
+  tier: P1
+  status: done
+  title: Fiber photometry z-score heatmap
+  template: templates/fiber_photometry.R
+  demo_png: demo_fig/fiber_photometry_demo.png
+  input_shape: aligned_event_matrix
+  required_fields:
+  - time
+  - mouse
+  - z_score
+  - condition
+  optional_fields:
+  - event_region
+  visual_encodings:
+    x: time
+    y: mouse_or_trial
+    fill: z_score
+    colour: condition
+  reusable_for:
+  - calcium_imaging_heatmap
+  - dLight_dF_F_comparison
+  - multi_trial_neural_signal
+  default_palette: nature
+  best_for: Multi-trial z-score heatmaps comparing conditions (vehicle vs drug), fiber photometry or calcium imaging
+  not_for: Single-trial line traces, non-time-aligned data, categorical comparisons
+- id: syllable_frequency
+  tier: P1
+  status: done
+  title: Syllable/vocalization frequency comparison
+  template: templates/syllable_frequency.R
+  demo_png: demo_fig/syllable_frequency_demo.png
+  input_shape: grouped_summary
+  required_fields:
+  - category
+  - group
+  - mean_freq
+  - sem
+  optional_fields:
+  - individual_data
+  visual_encodings:
+    x: category
+    y: mean_frequency
+    colour: group
+    error_bar: SEM
+  reusable_for:
+  - vocalization_or_behavior_frequency_profiling
+  - grouped_point_comparison_with_error_bars
+  default_palette: nature
+  best_for: Comparing frequency or rate across discrete categories with SEM error bars and manual dodge
+  not_for: Continuous time series, single-group summary, distribution comparison
+- id: peri_event_raster
+  tier: P1
+  status: done
+  title: Peri-event raster and heatmap
+  template: templates/peri_event_raster.R
+  demo_png: demo_fig/peri_event_raster_demo.png
+  input_shape: time_aligned_events
+  required_fields:
+  - time
+  - z_score
+  - trial
+  optional_fields:
+  - condition
+  - baseline_window
+  visual_encodings:
+    x: time_relative_to_event
+    y: z_score_per_trial
+    colour: condition
+    fill: z_score_heatmap
+  reusable_for:
+  - event_aligned_neural_activity
+  - stimulus_response_trace
+  - optogenetic_or_pharmacological_perturbation
+  default_palette: nature
+  best_for: Time-locked neural signal visualization with individual traces, mean+SEM ribbon, and trial heatmap
+  not_for: Unaligned continuous recording, single-point comparisons

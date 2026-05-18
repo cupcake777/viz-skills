@@ -1,4 +1,8 @@
-source(file.path(dirname(normalizePath(sub("^--file=", "", commandArgs(FALSE)[grepl("^--file=", commandArgs(FALSE))][1]))), "base_plot.R"))
+tryCatch(tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R"))),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 suppressPackageStartupMessages(library(ggplot2))
 
 generate_mock_data <- function(seed = 42) { set.seed(seed); vars <- paste0("V",1:8); m <- cor(matrix(rnorm(200*8),200,8)); colnames(m)<-rownames(m)<-vars; as.data.frame(as.table(m)) |> setNames(c("var1","var2","correlation_coefficient")) }

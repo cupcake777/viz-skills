@@ -1,4 +1,8 @@
-source(file.path(dirname(normalizePath(sub("^--file=", "", commandArgs(FALSE)[grepl("^--file=", commandArgs(FALSE))][1]))), "base_plot.R"))
+tryCatch(tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R"))),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 suppressPackageStartupMessages(library(ggplot2))
 
 generate_mock_data <- function(seed=42){fpr<-seq(0,1,length.out=100); tpr<-pmin(1, fpr^.35 + sin(fpr*pi)*.03); data.frame(fpr=fpr,tpr=tpr,auc=0.86)}

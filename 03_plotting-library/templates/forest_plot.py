@@ -20,7 +20,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
 from color_palettes import get_palette
 sys.path.insert(0, str(Path(__file__).parent))
-from base_plot import load_sci_style, save_fig, polish_legend, apply_gallery_polish
+from base_plot import load_sci_style, save_fig, polish_legend, apply_gallery_polish, \
+    text_color_on_bg, SEMANTIC_COLORS
 
 # ============ 参数配置 ============
 SIG_P_THRESHOLD = 0.05
@@ -82,8 +83,10 @@ def plot(df, variable_col='variable', hr_col='hr', ci_low_col='ci_low',
     load_sci_style(preset)
 
     pal = get_palette("npg")
-    COLOR_SIG = pal[3]       # navy
-    COLOR_NS = pal[1]        # cyan_blue
+    # Semantic color mapping (nature-skills): blue=protective, red=harmful, gray=NS
+    COLOR_HARMFUL = SEMANTIC_COLORS["negative"]   # #E53935 red
+    COLOR_PROTECTIVE = SEMANTIC_COLORS["proposed"]  # #0F4D92 deep blue
+    COLOR_NS = SEMANTIC_COLORS["ns"]               # #BBBBBB gray
 
     df = df.copy()
     df = df.sort_values(hr_col, ascending=True).reset_index(drop=True)
@@ -95,7 +98,14 @@ def plot(df, variable_col='variable', hr_col='hr', ci_low_col='ci_low',
 
     for i, row in df.iterrows():
         pv = _parse_pval(row[pval_col])
-        color = COLOR_SIG if pv < p_thresh else COLOR_NS
+        hr_val = row[hr_col]
+        # Direction-aware semantic coloring: harmful (HR>1) vs protective (HR<1) vs NS
+        if pv >= p_thresh:
+            color = COLOR_NS
+        elif hr_val > 1:
+            color = COLOR_HARMFUL
+        else:
+            color = COLOR_PROTECTIVE
         ax.errorbar(
             row[hr_col], i,
             xerr=[[row[hr_col] - row[ci_low_col]],
@@ -108,11 +118,11 @@ def plot(df, variable_col='variable', hr_col='hr', ci_low_col='ci_low',
     # Reference line at HR=1
     ax.axvline(x=1, color='grey', linestyle='--', linewidth=1, alpha=0.7, zorder=1)
 
-    # Shading for protective / harmful regions
+    # Shading for protective / harmful regions (semantic colors)
     xmin = max(ax.get_xlim()[0], 0.5)
     xmax = ax.get_xlim()[1]
-    ax.axvspan(xmin, 1, alpha=0.04, color='blue', zorder=0)
-    ax.axvspan(1, xmax if xmax > 2.5 else 2.5, alpha=0.04, color='red', zorder=0)
+    ax.axvspan(xmin, 1, alpha=0.04, color=COLOR_PROTECTIVE, zorder=0)
+    ax.axvspan(1, xmax if xmax > 2.5 else 2.5, alpha=0.04, color=COLOR_HARMFUL, zorder=0)
 
     ax.set_yticks(y_pos)
     ax.set_yticklabels(df[variable_col], fontsize=10, fontfamily='sans-serif')
@@ -137,11 +147,12 @@ def plot(df, variable_col='variable', hr_col='hr', ci_low_col='ci_low',
     ax.text(2.65, len(df) + 0.3, 'HR (95% CI)', fontsize=8,
             fontweight='bold', ha='left', va='center')
 
-    # Legend
-    sig_patch = mpatches.Patch(color=COLOR_SIG, label=f'p < {p_thresh}')
-    nonsig_patch = mpatches.Patch(color=COLOR_NS, label=f'p >= {p_thresh}')
-    ax.legend(handles=[sig_patch, nonsig_patch], loc='lower right',
-              framealpha=0.9, fontsize=9)
+    # Legend — semantic: Harmful (HR>1, p<0.05), Protective (HR<1, p<0.05), NS
+    harm_patch = mpatches.Patch(color=COLOR_HARMFUL, label=f'HR > 1, p < {p_thresh}')
+    prot_patch = mpatches.Patch(color=COLOR_PROTECTIVE, label=f'HR < 1, p < {p_thresh}')
+    nonsig_patch = mpatches.Patch(color=COLOR_NS, label=f'p ≥ {p_thresh}')
+    ax.legend(handles=[harm_patch, prot_patch, nonsig_patch], loc='lower right',
+              framealpha=0.9, fontsize=9, fancybox=True)
 
     # Grid
     ax.xaxis.grid(True, alpha=0.3, linestyle=':')

@@ -11,7 +11,9 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-source(file.path(dirname(sys.frame(1)$ofile), "base_plot.R"))
+tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 
 generate_mock_data <- function(n_bg = 500, n_branch = 3, pts_per_branch = 80, seed = 42) {
   set.seed(seed)

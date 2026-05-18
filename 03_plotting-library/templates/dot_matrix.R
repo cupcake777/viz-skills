@@ -12,7 +12,9 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-source(file.path(dirname(sys.frame(1)$ofile), "base_plot.R"))
+tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 
 generate_mock_data <- function(n_methods = 8, n_metrics = 5, seed = 42) {
   set.seed(seed)
@@ -59,7 +61,7 @@ plot_dot_matrix <- function(df,
     theme_sci(base_size = base_size) +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1),
-      panel.grid.major = element_line(color = "grey92", size = 0.2),
+      panel.grid.major = element_line(color = "grey92", linewidth = 0.2),
       panel.grid.minor = element_blank(),
       legend.key.height = unit(6, "pt"),
       legend.key.width = unit(8, "pt")

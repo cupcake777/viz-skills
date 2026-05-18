@@ -102,11 +102,11 @@ def plot(df, row_ann=None, col_ann=None,
         row_colors=row_colors, col_colors=col_colors,
         figsize=figsize or (8, 10),
         dendrogram_ratio=0.1,
-        cbar_pos=(0.02, 0.8, 0.03, 0.15),
+        cbar_pos=(0.85, 0.8, 0.03, 0.15),
         **kwargs
     )
 
-    g.fig.suptitle("Clustered Heatmap", y=1.02)
+    # No title — Nature style
 
     for a in g.fig.axes:
         polish_legend(a, loc="best")

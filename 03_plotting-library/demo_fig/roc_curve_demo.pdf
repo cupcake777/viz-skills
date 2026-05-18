@@ -1,0 +1,1 @@
+{"detail":"R template error:\nUsing: roc_curve_plot()\nError in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y,  : \n  invalid font type\nCalls: print ... drawDetails -> drawDetails.text -> grid.Call.graphics\nIn addition: There were 45 warnings (use warnings() to see them)\nExecution halted\n"}

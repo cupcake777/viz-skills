@@ -1,4 +1,8 @@
-source(file.path(dirname(normalizePath(sub("^--file=", "", commandArgs(FALSE)[grepl("^--file=", commandArgs(FALSE))][1]))), "base_plot.R"))
+tryCatch(tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R"))),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 suppressPackageStartupMessages(library(ggplot2))
 
 generate_mock_data <- function(seed = 42) {
@@ -9,8 +13,8 @@ generate_mock_data <- function(seed = 42) {
 
 grouped_bar_plot <- function(df, group_col = "group", category_col = "category", value_col = "value", error_col = "error", base_size = 16) {
   ggplot(df, aes(.data[[category_col]], .data[[value_col]], fill = .data[[group_col]])) +
-    geom_col(position = position_dodge(0.72), width = 0.62, colour = "white", linewidth = 0.15) +
-    geom_errorbar(aes(ymin = .data[[value_col]] - .data[[error_col]], ymax = .data[[value_col]] + .data[[error_col]]), position = position_dodge(0.72), width = 0.18, linewidth = 0.35) +
+    geom_col(position = position_dodge(0.72), width = 0.62, colour = "white", size = 0.15) +
+    geom_errorbar(aes(ymin = .data[[value_col]] - .data[[error_col]], ymax = .data[[value_col]] + .data[[error_col]]), position = position_dodge(0.72), width = 0.18, size = 0.35) +
     scale_fill_manual(values = NATURE_COLORS) + labs(x = NULL, y = "Value") + theme_clean(base_size) + theme(legend.position = "top")
 }
 

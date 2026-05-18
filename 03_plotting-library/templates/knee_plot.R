@@ -12,7 +12,9 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-source(file.path(dirname(sys.frame(1)$ofile), "base_plot.R"))
+tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 
 find_knee <- function(log_counts, log_rank) {
   # Max curvature in log-log space

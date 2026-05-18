@@ -12,7 +12,9 @@ suppressPackageStartupMessages({
   library(MASS)
 })
 
-source(file.path(dirname(sys.frame(1)$ofile), "base_plot.R"))
+tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 
 generate_mock_data <- function(n = 5000, n_clusters = 4, seed = 42) {
   set.seed(seed)

@@ -30,6 +30,7 @@ PYTHON_TEMPLATES = [
     "upset_plot",
     "sankey",
     "network_graph",
+    "histogram_density",
 ]
 
 # 需要R的模板（跳过）

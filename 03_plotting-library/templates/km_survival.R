@@ -1,4 +1,8 @@
-source(file.path(dirname(normalizePath(sub("^--file=", "", commandArgs(FALSE)[grepl("^--file=", commandArgs(FALSE))][1]))), "base_plot.R"))
+tryCatch(tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R"))),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 suppressPackageStartupMessages({library(ggplot2); library(survival)})
 
 generate_mock_data <- function(seed=42){set.seed(seed); n<-180; group<-rep(c("Low","High"),each=n/2); time<-rexp(n,rate=rep(c(.055,.035),each=n/2)); event<-rbinom(n,1,.72); data.frame(time=pmin(time,60),event=event,group=group)}

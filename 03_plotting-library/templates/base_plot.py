@@ -256,11 +256,13 @@ def auto_label(ax, texts: List[str], x: List, y: List,
             ann = ax.annotate(t, (xi, yi), fontsize=fontsize, 
                             fontweight="bold", ha="center", va="bottom")
             annotations.append(ann)
-        adjust_text(annotations, ax=ax, 
-                    arrowprops=dict(arrowstyle="-", color="0.5", lw=0.5),
-                    force_text=(0.3, 0.3), 
-                    force_points=(0.3, 0.3),
-                    **kwargs)
+        defaults = dict(
+            arrowprops=dict(arrowstyle="-", color="0.5", lw=0.5),
+            force_text=(0.3, 0.3),
+            force_points=(0.3, 0.3),
+        )
+        defaults.update(kwargs)
+        adjust_text(annotations, ax=ax, **defaults)
     except ImportError:
         # 回退：简单偏移标注
         for t, xi, yi in zip(texts, x, y):
@@ -313,6 +315,18 @@ GALLERY_PALETTE = {
 }
 
 
+def text_color_on_bg(bg_hex: str) -> str:
+    """根据背景亮度自动选择白色或黑色文字（nature-skills规则）。
+    
+    luminance < 128 → white, else → black.
+    用于bar内标注、热图cell文字等需要与背景对比的场景。
+    """
+    bg_hex = bg_hex.lstrip('#')
+    r, g, b = int(bg_hex[:2], 16), int(bg_hex[2:4], 16), int(bg_hex[4:6], 16)
+    lum = 0.299 * r + 0.587 * g + 0.114 * b
+    return "white" if lum < 128 else "black"
+
+
 def get_stage_cmap(stages=None):
     """获取发育阶段连续色标。
     
@@ -323,3 +337,29 @@ def get_stage_cmap(stages=None):
         stages = ["Fetal", "Infant", "Child", "Adolescent", "Adult", "Aged"]
     colors = [APA_STAGE_COLORS.get(s, "#999999") for s in stages]
     return LinearSegmentedColormap.from_list("stages", colors, N=256)
+
+
+# ─── 语义配色映射（nature-skills规则）──────────────────────────
+# 原则：蓝=己方/proposed，绿=正面/增益，红=负面/衰减，灰/蓝淡=基线
+SEMANTIC_COLORS = {
+    "proposed": "#0F4D92",    # 深蓝 — 己方方法/提出
+    "baseline": "#3775BA",   # 中蓝 — 基线/对照
+    "positive": "#2E9E44",   # 绿 — 正面/增益
+    "negative": "#E53935",   # 红 — 负面/衰减
+    "neutral":  "#8491B4",   # 灰蓝 — 无变化/中性
+    "up":       "#D55E00",   # Okabe-Ito红橙 — 上调
+    "down":     "#0072B2",   # Okabe-Ito蓝 — 下调
+    "ns":       "#BBBBBB",  # 淡灰 — 不显著
+}
+
+
+def apply_semantic_palette(role_color_map: dict) -> dict:
+    """应用语义配色：输入 {role: hex_or_key}，输出合并后的dict。
+    
+    role_color_map中如果value匹配SEMANTIC_COLORS的key，使用语义色；
+    否则保留原值（自定义色）。
+    """
+    result = {}
+    for role, color in role_color_map.items():
+        result[role] = SEMANTIC_COLORS.get(color, color)
+    return result

@@ -19,7 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "style"))
 from color_palettes import get_palette
-from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish
+from base_plot import load_sci_style, save_fig, auto_label, NATURE_COLORS, polish_legend, apply_gallery_polish, SEMANTIC_COLORS
 
 # ============ 参数配置 ============
 STYLE_PATH = Path(__file__).parent.parent / "style" / "matplotlibrc"
@@ -31,11 +31,10 @@ LABEL_TOP_N = 10        # 标注top N基因
 ALPHA_NS = 0.3          # 不显著点透明度
 ALPHA_SIG = 0.85        # 显著点透明度
 
-# 配色（Nature风格 — from volcano palette）
-_volcano_pal = get_palette("volcano_up_down_ns")
-COLOR_UP = _volcano_pal[0]     # Up-regulated (vermillion)
-COLOR_DOWN = _volcano_pal[1]   # Down-regulated (blue)
-COLOR_NS = _volcano_pal[2]     # Not significant (grey)
+# 语义配色（nature-skills规则：红=上调/positive，蓝=下调/negative，灰=NS）
+COLOR_UP = SEMANTIC_COLORS["up"]       # #D55E00 Okabe-Ito红橙→上调
+COLOR_DOWN = SEMANTIC_COLORS["down"]    # #0072B2 Okabe-Ito蓝→下调
+COLOR_NS = SEMANTIC_COLORS["ns"]        # #BBBBBB 淡灰→不显著
 
 
 def generate_mock_data(n=3000, seed=42):
@@ -122,7 +121,9 @@ def plot(df, fc_col="log2FC", pval_col="pvalue", label_col="gene_label",
             auto_label(ax, texts=top[label_col].tolist(),
                        x=top[fc_col].tolist(),
                        y=top["neg_log10p"].tolist(),
-                       fontsize=plt.rcParams.get("font.size", 7))
+                       fontsize=plt.rcParams.get("font.size", 7),
+                       force_text=(0.5, 0.5),
+                       force_points=(0.5, 0.5))
 
     # 轴标签（带单位，Nature规范）
     ax.set_xlabel("log₂ Fold Change")
@@ -139,6 +140,11 @@ def plot(df, fc_col="log2FC", pval_col="pvalue", label_col="gene_label",
 
     apply_gallery_polish(ax)
     polish_legend(ax, loc="best")
+
+    # Extend top margin to prevent label clipping
+    y_max = df["neg_log10p"].max()
+    y_bottom = ax.get_ylim()[0]
+    ax.set_ylim(bottom=y_bottom, top=y_max * 1.18)
 
     if save_path:
         save_fig(ax.figure if external_ax else fig, 

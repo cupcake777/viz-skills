@@ -1,0 +1,1 @@
+{"detail":"R template error:\nUsing: syllable_frequency_plot()\nError in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y,  : \n  invalid font type\nCalls: print ... drawDetails -> drawDetails.text -> grid.Call.graphics\nIn addition: There were 50 or more warnings (use warnings() to see the first 50)\nExecution halted\n"}

@@ -19,10 +19,8 @@ suppressPackageStartupMessages({
 })
 
 # ---------- source base_plot.R for helpers ----------
-source(file.path(dirname(normalizePath(sub(
-  "^--file=", "",
-  commandArgs(FALSE)[grepl("^--file=", commandArgs(FALSE))]
-)[1])), "base_plot.R"))
+tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R"))
 
 # ============================================================
 #  Mock data generator

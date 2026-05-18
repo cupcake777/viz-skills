@@ -1,4 +1,8 @@
-source(file.path(dirname(normalizePath(sub("^--file=", "", commandArgs(FALSE)[grepl("^--file=", commandArgs(FALSE))][1]))), "base_plot.R"))
+tryCatch(tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R"))),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 suppressPackageStartupMessages(library(ggplot2))
 
 generate_mock_data <- function(seed = 42) {
@@ -17,8 +21,8 @@ forest_plot <- function(df, var_col = "variable", est_col = "estimate", lower_co
   df$label <- sprintf("%.2f (%.2f-%.2f)", df[[est_col]], df[[lower_col]], df[[upper_col]])
   label_x <- max(df[[upper_col]], na.rm = TRUE) * 1.55
   ggplot(df, aes(.data[[est_col]], .data[[var_col]])) +
-    geom_vline(xintercept = ref_line, linetype = "22", colour = "grey55", linewidth = 0.35) +
-    geom_errorbarh(aes(xmin = .data[[lower_col]], xmax = .data[[upper_col]]), height = 0.18, linewidth = 0.45, colour = "#3C5488") +
+    geom_vline(xintercept = ref_line, linetype = "22", colour = "grey55", size = 0.35) +
+    geom_errorbarh(aes(xmin = .data[[lower_col]], xmax = .data[[upper_col]]), height = 0.18, size = 0.45, colour = "#3C5488") +
     geom_point(shape = 18, size = 2.1, colour = "#D73027") +
     geom_text(aes(x = label_x, label = label), hjust = 0, size = base_size / ggplot2::.pt) +
     scale_x_log10() +

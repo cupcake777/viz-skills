@@ -12,6 +12,9 @@ suppressPackageStartupMessages({
   library(ggrepel)
 })
 
+tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R"))
+
 SAFE_COLORS <- c(
   up = "#D73027",
   down = "#4575B4",
@@ -42,17 +45,11 @@ generate_mock_data <- function(n = 3000, seed = 42) {
 }
 
 theme_volcano <- function(base_size = 16) {
-  theme_classic(base_size = base_size, base_family = "Arial") +
+  theme_sci(base_size = base_size) +
     theme(
-      axis.line = element_line(linewidth = 0.35, colour = "grey20"),
-      axis.ticks = element_line(linewidth = 0.3, colour = "grey20"),
-      axis.text = element_text(colour = "grey25"),
       legend.position = "top",
       legend.justification = "right",
-      legend.title = element_blank(),
-      legend.key.width = unit(10, "pt"),
-      legend.key.height = unit(8, "pt"),
-      plot.margin = margin(5, 6, 5, 5, "pt")
+      plot.margin = margin(5, 10, 5, 5, "pt")
     )
 }
 
@@ -152,11 +149,12 @@ volcano_plot <- function(
       min.segment.length = 0,
       segment.size = 0.2,
       segment.alpha = 0.65,
-      box.padding = 0.45,
-      point.padding = 0.18,
-      force = 2.4,
+      box.padding = 0.55,
+      point.padding = 0.22,
+      force = 3.0,
       force_pull = 0.2,
-      max.overlaps = Inf,
+      max.overlaps = 20,
+      xlim = c(x_limits[1] * 0.92, x_limits[2] * 0.92),
       seed = 42,
       show.legend = FALSE
     ) +
@@ -166,7 +164,7 @@ volcano_plot <- function(
       labels = legend_labels
     ) +
     scale_x_continuous(limits = x_limits, expand = expansion(mult = c(0.02, 0.02))) +
-    scale_y_continuous(expand = expansion(mult = c(0.01, 0.16))) +
+    scale_y_continuous(expand = expansion(mult = c(0.01, 0.22))) +
     labs(x = xlab, y = ylab) +
     guides(colour = guide_legend(override.aes = list(size = 2.8, alpha = 1))) +
     theme_volcano(base_size = base_size)

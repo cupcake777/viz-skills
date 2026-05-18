@@ -1,4 +1,8 @@
-source(file.path(dirname(normalizePath(sub("^--file=", "", commandArgs(FALSE)[grepl("^--file=", commandArgs(FALSE))][1]))), "base_plot.R"))
+tryCatch(tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R"))),
+         error = function(e) tryCatch(source("/app/r_libs/style/base_plot.R"),
+         error = function(e) source("base_plot.R")))
 suppressPackageStartupMessages(library(ggplot2))
 
 generate_mock_data <- function(seed=42){set.seed(seed); group<-rep(paste0("Cluster ",1:5),each=120); th<-runif(length(group),0,2*pi); r<-rep(c(1,1.5,2,1.2,1.8),each=120); data.frame(UMAP1=r*cos(th)+rnorm(length(group),0,.25),UMAP2=r*sin(th)+rnorm(length(group),0,.25),group_label=group)}
